@@ -1,0 +1,5 @@
+CSCI205 Homework #1
+Michael Matirko and Annan Miao
+Exercise #1
+
+W0: -.5;	W1: .6;	   W2: .6
