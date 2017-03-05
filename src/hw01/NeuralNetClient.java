@@ -16,6 +16,10 @@
  */
 package hw01;
 
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.Scanner;
 
 /**
@@ -34,7 +38,7 @@ public class NeuralNetClient {
      * @param args the command line arguments
      * @author Michael Matirko
      */
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         System.out.println("\n");
         System.out.println("*************************************************");
         System.out.println("        Welcome to the Neural Net Client         ");
@@ -68,8 +72,34 @@ public class NeuralNetClient {
      *
      * @author Michael Matirko
      */
-    public static void createNewANN() {
+    public static void createNewANN() throws FileNotFoundException, IOException {
         System.out.println("Create ANN");
+        //Scanner input = new Scanner(System.in);
+
+        //File file = Scanner in = new Scanner(file);
+        BufferedReader br = null;
+        String newLine = "";
+        br = new BufferedReader(new FileReader("data.csv"));
+
+        while ((newLine = br.readLine()) != null) {
+
+            String[] numbers = newLine.split(",");
+
+            System.out.println(numbers[1]);
+        }
+
+        /*System.out.println("How many inputs?");
+        int numInput = input.nextInt();
+        System.out.println("How many outputs?");
+        int numOutput = input.nextInt();
+        System.out.println("How many groups of data?");
+        int numGroup = input.nextInt();
+
+        for (int i = 0; i < numGroup; i++) {
+            String newline = input.next();
+            String[] numbers = newline.split(",");
+            if numbers.length !=
+        }*/
     }
 
     /**
