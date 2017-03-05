@@ -29,9 +29,12 @@ public class Perceptron {
     /**
      * This array is an array of all of the weights of the perceptron's weights.
      * It corresponds to the inputs in inputArr.
-    *
+     *
      */
     private float[] weightArr;
+
+    private int target;
+    private int[] outputArr;
 
     /**
      * The constructor for the perceptron initializes each perceptron with the
@@ -42,13 +45,20 @@ public class Perceptron {
      * @author Michael Matirko
      *
      */
-    public Perceptron(int[] inputArr, float[] weightArr) {
+    public Perceptron(int[] inputArr, float[] weightArr, int[] outputArr,
+                      int target) {
         this.inputArr = inputArr;
         this.weightArr = weightArr;
+        this.outputArr = outputArr;
+        this.target = target;
     }
 
     private float netFunction() {
         // This is the net sum of all of the inputs and their weights
+        if (this.inputArr.length != this.outputArr.length) {
+            throw new IllegalArgumentException ex;
+        }
+
         float netSum = 0;
         for (int i = 0; i < inputArr.length; i++) {
             netSum += inputArr[i] * weightArr[i];
