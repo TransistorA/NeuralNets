@@ -105,21 +105,22 @@ public class NeuralNetClient {
 
         float result = 0;
         float error = 0;
-        for (int j = 0; j < outputs.size(); j++) {
+        for (int j = 0; j < outputs.size() - 1; j++) {
             int inputIndex = j * weights.size();
             do {
                 for (int i = 0; i < weights.size() - 1; i++) {
                     if (error > 0) {
-                        weights.set(i, weights.get(i) + (float) 0.3 * error);
+                        weights.set(i + 1,
+                                    weights.get(i + 1) + (float) 0.3 * error);
                     }
                     if (error < 0) {
-                        weights.set(i, weights.get(i) - (float) 0.3 * error);
-
+                        weights.set(i + 1,
+                                    weights.get(i + 1) - (float) 0.3 * error);
                     }
-                    result += weights.get(0);
                     result += inputs.get(inputIndex + i) * weights.get(
                             i + 1);
                 }
+                result += weights.get(0);
                 error = outputs.get(j) - z(result);  // target - net
             } while (error != 0);
 
