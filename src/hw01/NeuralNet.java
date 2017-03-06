@@ -37,6 +37,7 @@ public class NeuralNet {
      * effectively do the same.
      */
     public static double EPSILON = .5E-4;
+    private String fileName;
 
     /**
      * This is the ArrayList of perceptrons used by the Neural Net. They are all
@@ -44,7 +45,9 @@ public class NeuralNet {
      */
     ArrayList<Perceptron> perList = new ArrayList<Perceptron>();
 
-    public NeuralNet() {
+    public NeuralNet(String fileName) {
+        this.fileName = fileName;
+
         //Perceptron newPer = new Perceptron();
         //this.perList.add(newPer);
     }
@@ -61,7 +64,7 @@ public class NeuralNet {
      * @throws FileNotFoundException
      * @throws IOException
      */
-    public void update(String fileName) throws FileNotFoundException, IOException {
+    public void update() throws FileNotFoundException, IOException {
         ArrayList<Integer> inputs = new ArrayList<>();
         ArrayList<Integer> outputs = new ArrayList<>();
         ArrayList<Float> weights = new ArrayList<>();
@@ -80,11 +83,9 @@ public class NeuralNet {
                 inputs.add(Integer.parseInt(numbers[i]));
             }
         }
-        //System.out.println(inputs.size() / outputs.size() + 1);
         Random randnumObj = new Random();
         for (int i = 0; i < inputs.size() / outputs.size() + 1; i++) {
             weights.add(randnumObj.nextFloat() - (float) 0.5);
-            //randnumObj.nextFloat() - (float) 0.5
         }
 
         float result = 0;
@@ -95,18 +96,21 @@ public class NeuralNet {
                 for (int i = 0; i < weights.size() - 1; i++) {
                     if (error > 0) {
                         weights.set(i + 1,
-                                    weights.get(i + 1) + (float) 0.3 * error);
+                                    weights.get(i + 1) + (float) 0.3 * inputs.get(
+                                    inputIndex + i) * error);
                     }
                     if (error < 0) {
                         weights.set(i + 1,
-                                    weights.get(i + 1) - (float) 0.3 * error);
+                                    weights.get(i + 1) - (float) 0.3 * inputs.get(
+                                    inputIndex + i) * error);
                     }
                     result += inputs.get(inputIndex + i) * weights.get(
                             i + 1);
                 }
                 result += weights.get(0);
                 error = outputs.get(j) - errorFunc(result);  // target - net
-            } while (Math.abs(error) > EPSILON);
+            } while (error != 0);
+            //while (Math.abs(error) > EPSILON);
 
         }
 
