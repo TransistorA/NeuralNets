@@ -71,7 +71,7 @@ public class NeuralNet {
 
         BufferedReader br = null;
         String newLine = "";
-        File file = new File(fileName);
+        File file = new File(this.fileName);
         br = new BufferedReader(new FileReader(file));
 
         while ((newLine = br.readLine()) != null) {
@@ -90,8 +90,8 @@ public class NeuralNet {
 
         float result = 0;
         float error = 0;
-        for (int j = 0; j < outputs.size() - 1; j++) {
-            int inputIndex = j * weights.size();
+        for (int j = 0; j < outputs.size(); j++) {
+            int inputIndex = j * (weights.size() - 1);
             do {
                 for (int i = 0; i < weights.size() - 1; i++) {
                     if (error > 0) {
@@ -101,7 +101,7 @@ public class NeuralNet {
                     }
                     if (error < 0) {
                         weights.set(i + 1,
-                                    weights.get(i + 1) - (float) 0.3 * inputs.get(
+                                    weights.get(i + 1) + (float) 0.3 * inputs.get(
                                     inputIndex + i) * error);
                     }
                     result += inputs.get(inputIndex + i) * weights.get(
