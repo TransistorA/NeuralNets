@@ -90,7 +90,7 @@ public class Perceptron {
     private float netFunction() {
         // This is the net sum of all of the inputs and their weights
         if (this.inputArr.length != this.outputArr.length) {
-            throw new IllegalArgumentException ex;
+            throw new IllegalArgumentException("");
         }
 
         float netSum = 0;
