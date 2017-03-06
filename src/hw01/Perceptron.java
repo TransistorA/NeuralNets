@@ -87,6 +87,14 @@ public class Perceptron {
         this.target = target;
     }
 
+    /**
+     * This function takes no arguments, and calculates the net function for
+     * that particular perceptron (as a float). The net function is the sum of
+     * each input with its weight.
+     *
+     * @return A float corresponding to the net function's value
+     * @author Michael Matirko
+     */
     private float netFunction() {
         // This is the net sum of all of the inputs and their weights
         if (this.inputArr.length != this.outputArr.length) {

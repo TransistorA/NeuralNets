@@ -16,8 +16,8 @@
  */
 package hw01;
 
-import static hw01.NeuralNetClient.z;
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
@@ -30,6 +30,37 @@ import java.util.Random;
  */
 public class NeuralNet {
 
+    /**
+     * This is the maximum error allowed by the perceptron learning rule When
+     * it's zero, the program can sometimes take a while to converge (due to the
+     * way floats are represented) so this uses a very small number to
+     * effectively do the same.
+     */
+    public static double EPSILON = .5E-4;
+
+    /**
+     * This is the ArrayList of perceptrons used by the Neural Net. They are all
+     * individual entities and have their own weights, inputs, etc...
+     */
+    ArrayList<Perceptron> perList = new ArrayList<Perceptron>();
+
+    public NeuralNet() {
+        //Perceptron newPer = new Perceptron();
+        //this.perList.add(newPer);
+    }
+
+    /**
+     * Updates the perceptrons according to the CSV file that was input that
+     *
+     *
+     * specifies the new rules to use. It compares the current values and their
+     * errors to the actual values, and uses the perceptron learning rule in
+     * order to change the output values of the perceptron.
+     *
+     * @param fileName - The name of the file containing the update data
+     * @throws FileNotFoundException
+     * @throws IOException
+     */
     public void update(String fileName) throws FileNotFoundException, IOException {
         ArrayList<Integer> inputs = new ArrayList<>();
         ArrayList<Integer> outputs = new ArrayList<>();
@@ -37,7 +68,8 @@ public class NeuralNet {
 
         BufferedReader br = null;
         String newLine = "";
-        br = new BufferedReader(new FileReader(fileName));
+        File file = new File(fileName);
+        br = new BufferedReader(new FileReader(file));
 
         while ((newLine = br.readLine()) != null) {
 
@@ -73,8 +105,8 @@ public class NeuralNet {
                             i + 1);
                 }
                 result += weights.get(0);
-                error = outputs.get(j) - z(result);  // target - net
-            } while (error != 0);
+                error = outputs.get(j) - errorFunc(result);  // target - net
+            } while (Math.abs(error) > EPSILON);
 
         }
 
@@ -83,4 +115,17 @@ public class NeuralNet {
         }
     }
 
+    /**
+     * This function is a basic step function representing the error for that
+     * iteration of the process.
+     *
+     * @param sum
+     * @return
+     */
+    public static int errorFunc(float sum) {
+        if (sum >= 0) {
+            return 1;
+        }
+        return 0;
+    }
 }

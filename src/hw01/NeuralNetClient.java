@@ -87,11 +87,4 @@ public class NeuralNetClient {
 
     }
 
-    public static int z(float sum) {
-        if (sum >= 0) {
-            return 1;
-        }
-        return 0;
-    }
-
 }
