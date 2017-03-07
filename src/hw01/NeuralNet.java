@@ -22,7 +22,6 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Random;
 
 /**
  *
@@ -36,20 +35,33 @@ public class NeuralNet {
      * way floats are represented) so this uses a very small number to
      * effectively do the same.
      */
-    public static double EPSILON = .5E-4;
-    private String fileName;
+    private static double EPSILON = .5E-4;
 
     /**
-     * This is the ArrayList of perceptrons used by the Neural Net. They are all
-     * individual entities and have their own weights, inputs, etc...
+     * This is the ArrayList of Layers used by the Neural Net. They are all
+     * individual entities and have their own weights, values, etc...
      */
-    ArrayList<Perceptron> perList = new ArrayList<Perceptron>();
+    private ArrayList<Layer> LayerList = new ArrayList<>();
 
-    public NeuralNet(String fileName) {
-        this.fileName = fileName;
+    /**
+     * Construct the neural net - right now, it's a list of layers that all have
+     * a certain number of outputs.
+     *
+     * @param numInputs
+     * @param numOutputs
+     */
+    public NeuralNet(int numInputs, int numOutputs) {
+        //Add two new Layers to the layer list
 
-        //Perceptron newPer = new Perceptron();
-        //this.perList.add(newPer);
+        //INPUT LAYER
+        LayerList.add(new Layer());
+        for (int i = 0; i < numInputs; i++) {
+            LayerList.get(0).addPer(new Perceptron(numOutputs));
+        }
+
+        //OUTPUT LAYER
+        LayerList.add(new Layer());
+
     }
 
     /**
@@ -64,59 +76,39 @@ public class NeuralNet {
      * @throws FileNotFoundException
      * @throws IOException
      */
-    public void update() throws FileNotFoundException, IOException {
+    public void update(String fileName) throws FileNotFoundException, IOException {
         ArrayList<Integer> inputs = new ArrayList<>();
-        ArrayList<Integer> outputs = new ArrayList<>();
-        ArrayList<Float> weights = new ArrayList<>();
+        ArrayList<Integer> targetOutput = new ArrayList<>();
+
+        //ssError for each set of inputs
+        ArrayList<Float> ssError = new ArrayList<>();
 
         BufferedReader br = null;
         String newLine = "";
-        File file = new File(this.fileName);
+        File file = new File(fileName);
         br = new BufferedReader(new FileReader(file));
 
         while ((newLine = br.readLine()) != null) {
 
             String[] numbers = newLine.split(",");
-
-            outputs.add(Integer.parseInt(numbers[numbers.length - 1]));
+            // Get the target outputs (the outputs that we are
+            // actually hoping that the neural network will give us
+            targetOutput.add(Integer.parseInt(numbers[numbers.length - 1]));
             for (int i = 0; i < numbers.length - 1; i++) {
                 inputs.add(Integer.parseInt(numbers[i]));
             }
         }
-        Random randnumObj = new Random();
-        for (int i = 0; i < inputs.size() / outputs.size() + 1; i++) {
-            weights.add(randnumObj.nextFloat() - (float) 0.5);
-        }
 
-        float result = 0;
-        float error = 0;
-        for (int j = 0; j < outputs.size(); j++) {
-            int inputIndex = j * (weights.size() - 1);
-            do {
-                for (int i = 0; i < weights.size() - 1; i++) {
-                    if (error > 0) {
-                        weights.set(i + 1,
-                                    weights.get(i + 1) + (float) 0.3 * inputs.get(
-                                    inputIndex + i) * error);
-                    }
-                    if (error < 0) {
-                        weights.set(i + 1,
-                                    weights.get(i + 1) + (float) 0.3 * inputs.get(
-                                    inputIndex + i) * error);
-                    }
-                    result += inputs.get(inputIndex + i) * weights.get(
-                            i + 1);
-                }
-                result += weights.get(0);
-                error = outputs.get(j) - errorFunc(result);  // target - net
-            } while (error != 0);
-            //while (Math.abs(error) > EPSILON);
+        int sserror = 0;
+        int inputSize = this.LayerList.get(0).getPerList().size();
+        int numIter = (int) Math.pow(2, inputSize);
 
-        }
-
-        for (int i = 0; i < weights.size(); i++) {
-            System.out.println(weights.get(i));
-        }
+        do {
+            for (int iter = 0; iter < numIter; iter++) {
+                //Initialize the ArrayList of ssErrors to be zero for everything
+                ssError.set(iter) = (float) 0.0;
+            }
+        } while (sserror > EPSILON);
     }
 
     /**

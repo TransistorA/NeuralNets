@@ -15,6 +15,7 @@
  */
 package hw01;
 
+import java.util.ArrayList;
 import java.util.Random;
 
 /**
@@ -24,89 +25,101 @@ import java.util.Random;
 public class Perceptron {
 
     /**
-     * This int[] contains all of the input values passed into the perceptron.
-     */
-    private int[] inputArr;
-
-    /**
      * This array is an array of all of the weights of the perceptron's weights.
      * It corresponds to the inputs in inputArr.
      *
      */
-    private float[] weightArr;
+    private ArrayList<Float> weightArr;
 
-    /**
-     * This is the target value for that particular perceptron
-     */
-    private int target;
-    private int[] outputArr;
+    private float value;
+
+    private float ACTIVATION_CONST;
 
     /**
      * The constructor for the perceptron initializes each perceptron with the
-     * inputs passed to it, and random weights (as this constructor does not
-     * take a weight list as an argument.)
+     * value passed to it, and random weights to populate the weight list
      *
-     * @param inputArr - An array of integers (the input values)
-     * @param outputArr - An output array that will contain the outputs
-     * @param target - the integer target value
      * @author Michael Matirko
      *
      */
-    public Perceptron(int[] inputArr, int[] outputArr, int target) {
-        this(inputArr, new float[1], outputArr, target);
-
-        // If no weightArray is passed in, just assume that it
-        // is supposed to be initialized to random values
-        float[] weightArr = new float[inputArr.length];
-
+    public Perceptron(int numweights) {
         Random randnumObj = new Random();
 
-        for (int i = 0; i < inputArr.length; i++) {
+        for (int i = 0; i < numweights; i++) {
             // Set the weight to a random float between -.5 and .5
-            weightArr[i] = randnumObj.nextFloat() - (float) 0.5;
+            weightArr.set(i, randnumObj.nextFloat() - (float) 0.5);
         }
 
     }
 
     /**
-     * The constructor for the perceptron initializes each perceptron with the
-     * inputs passed to it, and the weights passed to it.
+     * Gets the weight array from the perceptron
      *
-     * @param inputArr - An array of ints (the input values)
-     * @param weightArr - An array of floats (the weight values)
-     * @param outputArr - An output array that will contain the outputs
-     * @param target - the integer target value
-     * @author Michael Matirko
-     *
+     * @return
      */
-    public Perceptron(int[] inputArr, float[] weightArr, int[] outputArr,
-                      int target) {
-        this.inputArr = inputArr;
-        this.weightArr = weightArr;
-        this.outputArr = outputArr;
-        this.target = target;
+    public ArrayList<Float> getWeightArr() {
+        return weightArr;
     }
 
     /**
-     * This function takes no arguments, and calculates the net function for
-     * that particular perceptron (as a float). The net function is the sum of
-     * each input with its weight.
+     * Sets the weight for the perceptron with the specified position in the
+     * weight ArrayList
      *
-     * @return A float corresponding to the net function's value
+     * @param position
+     * @param weight
      * @author Michael Matirko
      */
-    private float netFunction() {
-        // This is the net sum of all of the inputs and their weights
-        if (this.inputArr.length != this.outputArr.length) {
-            throw new IllegalArgumentException("");
-        }
+    public void setWeight(int position, float weight) {
+        this.weightArr.set(position, weight);
+    }
 
-        float netSum = 0;
-        for (int i = 0; i < inputArr.length; i++) {
-            netSum += inputArr[i] * weightArr[i];
-        }
+    /**
+     * Gets the value of this perceptron
+     *
+     * @return A float corresponding to the value of the perceptron
+     * @author Michael Matirko
+     */
+    public float getValue() {
+        return value;
+    }
 
-        return netSum;
+    /**
+     * Sets the value of the perceptron
+     *
+     * @return Nothing
+     * @param value - the value to set the perceptron's value to
+     * @author Michael Matirko
+     */
+    public void setValue(float value) {
+        this.value = value;
+    }
+
+    /**
+     * Tells whether this perceptron is "activated" or not
+     *
+     * @param net
+     * @return Either 1 or zero, depending on whether the perceptron is
+     * activated
+     * @author Michael Matirko
+     */
+    public int activation(float net) {
+        if (net - this.ACTIVATION_CONST > 0) {
+            return 1;
+        }
+        else {
+            return 0;
+        }
+    }
+
+    /**
+     * Returns a visual representation of a Perceptron object (primarily for
+     * debugging purposes, but also cool to look at)
+     *
+     * @return A string representing a Perceptron
+     */
+    @Override
+    public String toString() {
+        return "Perceptron{" + "weightArr = " + weightArr + ", value=" + value + '}';
     }
 
 }

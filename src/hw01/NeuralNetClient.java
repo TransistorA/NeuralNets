@@ -71,9 +71,18 @@ public class NeuralNetClient {
      * @author Annan Miao
      */
     public static void createNewANN() throws FileNotFoundException, IOException {
+        Scanner in = new Scanner(System.in);
+
         System.out.println("Create ANN");
-        NeuralNet net = new NeuralNet("data.csv");
-        net.update();
+
+        System.out.print("How many inputs should we have? ");
+        int numInputs = in.nextInt();
+
+        System.out.print("\nHow many outputs should we have? ");
+        int numOutputs = in.nextInt();
+
+        NeuralNet net = new NeuralNet(numInputs, numOutputs);
+        net.update("data.csv");
 
     }
 
