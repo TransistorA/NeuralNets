@@ -15,7 +15,7 @@
  */
 package hw01;
 
-import java.util.Random;
+import java.util.ArrayList;
 
 /**
  *
@@ -26,20 +26,22 @@ public class Perceptron {
     /**
      * This int[] contains all of the input values passed into the perceptron.
      */
-    private int[] inputArr;
+    private ArrayList<Integer> inputArr;
 
     /**
      * This array is an array of all of the weights of the perceptron's weights.
      * It corresponds to the inputs in inputArr.
      *
      */
-    private float[] weightArr;
+    private ArrayList<Float> weightArr;
 
     /**
      * This is the target value for that particular perceptron
      */
-    private int target;
-    private int[] outputArr;
+    private int output; //target
+    private float bias;
+    private int numInput;
+    private int error;
 
     /**
      * The constructor for the perceptron initializes each perceptron with the
@@ -47,25 +49,18 @@ public class Perceptron {
      * take a weight list as an argument.)
      *
      * @param inputArr - An array of integers (the input values)
-     * @param outputArr - An output array that will contain the outputs
-     * @param target - the integer target value
+     * @param output
      * @author Michael Matirko
      *
      */
-    public Perceptron(int[] inputArr, int[] outputArr, int target) {
-        this(inputArr, new float[1], outputArr, target);
+    public Perceptron(ArrayList<Integer> inputArr, int output,
+                      ArrayList<Float> weightArr) {
+        this.inputArr = inputArr;
+        this.output = output;
+        this.numInput = inputArr.size();
 
         // If no weightArray is passed in, just assume that it
         // is supposed to be initialized to random values
-        float[] weightArr = new float[inputArr.length];
-
-        Random randnumObj = new Random();
-
-        for (int i = 0; i < inputArr.length; i++) {
-            // Set the weight to a random float between -.5 and .5
-            weightArr[i] = randnumObj.nextFloat() - (float) 0.5;
-        }
-
     }
 
     /**
@@ -74,17 +69,12 @@ public class Perceptron {
      *
      * @param inputArr - An array of ints (the input values)
      * @param weightArr - An array of floats (the weight values)
-     * @param outputArr - An output array that will contain the outputs
-     * @param target - the integer target value
      * @author Michael Matirko
      *
      */
-    public Perceptron(int[] inputArr, float[] weightArr, int[] outputArr,
-                      int target) {
+    public Perceptron(ArrayList<Integer> inputArr, ArrayList<Float> weightArr) {
         this.inputArr = inputArr;
         this.weightArr = weightArr;
-        this.outputArr = outputArr;
-        this.target = target;
     }
 
     /**
@@ -95,18 +85,29 @@ public class Perceptron {
      * @return A float corresponding to the net function's value
      * @author Michael Matirko
      */
-    private float netFunction() {
+    public int Error() {
         // This is the net sum of all of the inputs and their weights
-        if (this.inputArr.length != this.outputArr.length) {
-            throw new IllegalArgumentException("");
-        }
+        /*if (this.inputArr.size() != this.weightArr.size()) {
+            throw new IllegalArgumentException(
+                    "Size Error" + this.inputArr.size() + " " + this.weightArr.size());
+        }*/
 
         float netSum = 0;
-        for (int i = 0; i < inputArr.length; i++) {
-            netSum += inputArr[i] * weightArr[i];
+        for (int i = 0; i < inputArr.size(); i++) {
+            netSum += inputArr.get(i) * weightArr.get(i);
         }
 
-        return netSum;
+        netSum += bias;
+        this.error = output - step(netSum);
+
+        return error;
+    }
+
+    public static int step(float num) {
+        if (num >= 1) {
+            return 1;
+        }
+        return 0;
     }
 
 }

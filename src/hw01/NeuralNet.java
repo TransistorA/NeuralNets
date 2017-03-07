@@ -38,6 +38,8 @@ public class NeuralNet {
      */
     public static double EPSILON = .5E-4;
     private String fileName;
+    private ArrayList<Float> weights;
+    private float bias;
 
     /**
      * This is the ArrayList of perceptrons used by the Neural Net. They are all
@@ -60,15 +62,23 @@ public class NeuralNet {
      * errors to the actual values, and uses the perceptron learning rule in
      * order to change the output values of the perceptron.
      *
-     * @param fileName - The name of the file containing the update data
      * @throws FileNotFoundException
      * @throws IOException
      */
-    public void update() throws FileNotFoundException, IOException {
+    public void update(int numInput) throws FileNotFoundException, IOException {
         ArrayList<Integer> inputs = new ArrayList<>();
-        ArrayList<Integer> outputs = new ArrayList<>();
-        ArrayList<Float> weights = new ArrayList<>();
+        int output;
+        ArrayList weights = new ArrayList<>();
 
+        Random randnumObj = new Random();
+
+        for (int i = 0; i < numInput; i++) {
+            // Set the weight to a random float between -.5 and .5
+            weights.add(randnumObj.nextFloat() - (float) 0.5);
+        }
+        this.bias = randnumObj.nextFloat();
+
+        //ArrayList<Float> weights = new ArrayList<>();
         BufferedReader br = null;
         String newLine = "";
         File file = new File(this.fileName);
@@ -78,12 +88,43 @@ public class NeuralNet {
 
             String[] numbers = newLine.split(",");
 
-            outputs.add(Integer.parseInt(numbers[numbers.length - 1]));
+            output = (Integer.parseInt(numbers[numbers.length - 1]));
             for (int i = 0; i < numbers.length - 1; i++) {
                 inputs.add(Integer.parseInt(numbers[i]));
             }
+
+            Perceptron p = new Perceptron(inputs, output, weights);
+            int error = p.Error();
+            while (error != 0) {
+                if (error > 0) {
+                    for (int i = 0; i < weights.size(); i++) {
+                        weights.set(i,
+                                    (float) weights.get(i) - (float) 0.3 * inputs.get(
+                                    i) * error);
+                    }
+                    this.bias += 0.3;
+                    p = new Perceptron(inputs, output, weights);
+                    error = p.Error();
+                }
+                if (error < 0) {
+                    for (int i = 0; i < weights.size(); i++) {
+                        weights.set(i,
+                                    (float) weights.get(i) - (float) 0.3 * inputs.get(
+                                    i) * error);
+                    }
+                    this.bias -= 0.3;
+                    p = new Perceptron(inputs, output, weights);
+                    error = p.Error();
+                }
+            }
+
         }
-        Random randnumObj = new Random();
+
+        for (int i = 0; i < weights.size(); i++) {
+            System.out.println(weights.get(i));
+        }
+
+        /*Random randnumObj = new Random();
         for (int i = 0; i < inputs.size() / outputs.size() + 1; i++) {
             weights.add(randnumObj.nextFloat() - (float) 0.5);
         }
@@ -116,7 +157,7 @@ public class NeuralNet {
 
         for (int i = 0; i < weights.size(); i++) {
             System.out.println(weights.get(i));
-        }
+        }*/
     }
 
     /**

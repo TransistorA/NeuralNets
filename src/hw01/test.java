@@ -15,8 +15,12 @@
  */
 package hw01;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Random;
 
 /**
@@ -25,30 +29,53 @@ import java.util.Random;
  */
 public class test {
 
-    private ArrayList<Integer> inputs;
-    private ArrayList<Integer> outputs;
-    private ArrayList<Double> weights;
+    private ArrayList<Integer> inputs = new ArrayList<>();
+    private ArrayList<Integer> outputs = new ArrayList<>();
+    private ArrayList<Double> weights = new ArrayList<>();
     private double bias;
     private boolean correctWeights = true;
     private int numIn;
     private int numOut;
+    private String fileName;
 
-    public test() {
-        this.numIn = 2;
+    public test(String fileName) throws FileNotFoundException, IOException {
+        //this.numIn = 2;
+        //this.numOut = 1;
+        //this.inputs = new ArrayList<>(Arrays.asList(0, 0, 0, 1, 1,
+        //                                          0, 1, 1));
+        //this.outputs = new ArrayList<>(Arrays.asList(0, 0, 0, 1));
+
+        this.fileName = fileName;
+
+        BufferedReader br;
+        String newLine;
+        File file = new File(this.fileName);
+        br = new BufferedReader(new FileReader(file));
+
+        while ((newLine = br.readLine()) != null) {
+
+            String[] numbers = newLine.split(",");
+
+            outputs.add(Integer.parseInt(numbers[numbers.length - 1]));
+            for (int i = 0; i < numbers.length - 1; i++) {
+                inputs.add(Integer.parseInt(numbers[i]));
+            }
+        }
         this.numOut = 1;
-        this.inputs = new ArrayList<>(Arrays.asList(0, 0, 0, 1, 1,
-                                                    0, 1, 1));
-        this.outputs = new ArrayList<>(Arrays.asList(0, 0, 0, 1));
-        this.weights = new ArrayList<>();
+        this.numIn = this.inputs.size() / this.outputs.size();
+
         Random r = new Random();
         for (int i = 0; i < numIn; i++) {
             this.weights.add(r.nextDouble() - 0.5);
         }
         this.bias = r.nextDouble() - 0.5;
+
     }
 
     public void run() {
 
+        //(inputs);
+        //print(outputs);
         if (inputs.size() / numIn != outputs.size() / numOut) {
             throw new IllegalArgumentException("Size Error.");
         }

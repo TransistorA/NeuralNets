@@ -15,6 +15,8 @@
  */
 package hw01;
 
+import java.io.IOException;
+
 /**
  *
  * @author am049
@@ -24,8 +26,8 @@ public class testmain {
     /**
      * @param args the command line arguments
      */
-    public static void main(String[] args) {
-        test a = new test();
+    public static void main(String[] args) throws IOException {
+        test a = new test("or.csv");
         a.run();
     }
 
