@@ -27,7 +27,7 @@ public class testmain {
      * @param args the command line arguments
      */
     public static void main(String[] args) throws IOException {
-        test a = new test("or.csv");
+        NeuralNet a = new NeuralNet("or.csv");
         a.run();
     }
 

@@ -75,7 +75,7 @@ public class NeuralNetClient {
         System.out.print("Create ANN\nEnter the file name: ");
         String fileName = in.next();
 
-        test a = new test(fileName);
+        NeuralNet a = new NeuralNet(fileName);
         a.run();
 
     }
