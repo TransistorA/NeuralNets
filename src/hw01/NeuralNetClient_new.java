@@ -16,8 +16,13 @@
  */
 package hw01;
 
+import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 /**
@@ -25,6 +30,10 @@ import java.util.Scanner;
  * @author Annan Miao and Michael Matirko
  */
 public class NeuralNetClient_new {
+
+    private static ArrayList<Double> weights = null;
+    private static double bias;
+    private static boolean endloop = false;
 
     /**
      * This method is the main method for the Neural Net Client. It calls all of
@@ -37,26 +46,42 @@ public class NeuralNetClient_new {
      * @author Michael Matirko
      */
     public static void main(String[] args) throws IOException {
+
         System.out.println("\n");
-        System.out.println("*************************************************");
-        System.out.println("        Welcome to the Neural Net Client         ");
-        System.out.println(" An ANN implementation by A. Miao and M. Matirko ");
-        System.out.println("*************************************************");
-        System.out.println("     Select one of the following options:   \n   ");
-        System.out.println(" 1) Create a new ANN                             ");
-        System.out.println(" 2) Read from an existing ANN config             ");
-        System.out.print("\n Selection: ");
+        System.out.println(
+                "*************************************************");
+        System.out.println(
+                "        Welcome to the Neural Net Client         ");
+        System.out.println(
+                " An ANN implementation by A. Miao and M. Matirko ");
+        System.out.println(
+                "*************************************************");
+        System.out.println(
+                "     Select one of the following options:   \n   ");
+        System.out.println(
+                " 1) Create a new ANN                             ");
+        System.out.println(
+                " 2) Read from an existing ANN config             ");
+        System.out.println(
+                " 3) End the program             ");
 
-        // Get a selection from the user
-        Scanner inputsc = new Scanner(System.in);
-        int selection = inputsc.nextInt();
+        while (endloop == false) {
+            // Get a selection from the user
+            System.out.print("\n Selection: ");
+            Scanner inputsc = new Scanner(System.in);
+            int selection = inputsc.nextInt();
 
-        // Call the correct method depending on the user's choice
-        if (selection == 1) {
-            createNewANN();
-        }
-        else if (selection == 2) {
-            loadExistingConfig();
+            // Call the correct method depending on the user's choice
+            if (selection == 1) {
+                createNewANN();
+            }
+            else if (selection == 2) {
+                loadExistingConfig();
+            }
+
+            else if (selection == 3) {
+                endloop = true;
+            }
         }
 
     }
@@ -74,9 +99,31 @@ public class NeuralNetClient_new {
         Scanner in = new Scanner(System.in);
         System.out.print("Create ANN\nEnter the file name: ");
         String fileName = in.next();
+        System.out.print(
+                "Do you want to save the correct weights into a file? (y/n) ");
+        String yn = in.next();
 
         NeuralNet_new a = new NeuralNet_new(fileName);
-        a.run();
+        a.generateCorrectWeights();
+        weights = a.getWeights();
+        bias = a.getBias();
+
+        if (yn.equals("n")) {
+            System.out.println("OK don't create file.");
+        }
+        else if (yn.equals("y")) {
+            System.out.print("Enter the save file name: ");
+            String saveFile = in.next();
+            PrintWriter out = new PrintWriter(saveFile, "UTF-8");
+            out.print(a.getBias());
+            out.print(",");
+            for (int i = 0; i < a.getWeights().size(); i++) {
+                out.print(a.getWeights().get(i));
+                out.print(",");
+            }
+            out.close();
+            System.out.println("File created!");
+        }
 
     }
 
@@ -86,7 +133,33 @@ public class NeuralNetClient_new {
      *
      * @author
      */
-    private static void loadExistingConfig() {
+    private static void loadExistingConfig() throws FileNotFoundException, IOException {
+        if (weights == null) {
+            System.out.println(
+                    "Train a data file first to get the weights for prediction.");
+        }
+        else {
+            Scanner in = new Scanner(System.in);
+            System.out.print("Enter the file name: ");
+            String fileName = in.next();
 
+            String newLine;
+            File file = new File(fileName);
+            BufferedReader br = new BufferedReader(new FileReader(file));
+
+            ArrayList<Integer> inputs = new ArrayList<>();
+
+            while ((newLine = br.readLine()) != null) {
+
+                String[] numbers = newLine.split(",");
+                for (int i = 0; i < numbers.length; i++) {
+                    inputs.add(Integer.parseInt(numbers[i]));
+                }
+            }
+
+            NeuralNet_new a = new NeuralNet_new(inputs, weights, bias);
+            a.generateOutputs();
+            a.print(a.getOutputs());
+        }
     }
 }

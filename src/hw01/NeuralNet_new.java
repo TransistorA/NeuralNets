@@ -79,10 +79,25 @@ public class NeuralNet_new {
 
     }
 
-    public void run() {
+    public NeuralNet_new(ArrayList inputs, ArrayList weights, double bias) {
+        this.inputs = inputs;
+        this.weights = weights;
+        this.numIn = this.weights.size();
+        this.bias = bias;
+        this.outputs = new ArrayList<>();
+    }
 
-        //(inputs);
-        //print(outputs);
+    public void generateOutputs() {
+        for (int i = 0; i < inputs.size() / numIn; i++) {
+
+            ArrayList newInputs = new ArrayList(inputs.subList(i * numIn,
+                                                               i * numIn + numIn));
+            outputs.add(calculateOutput(newInputs));
+        }
+    }
+
+    public void generateCorrectWeights() {
+
         if (inputs.size() / numIn != outputs.size() / numOut) {
             throw new IllegalArgumentException("Size Error.");
         }
@@ -120,6 +135,18 @@ public class NeuralNet_new {
         int error = output - step(netSum);
 
         return error;
+    }
+
+    public int calculateOutput(ArrayList<Integer> inputs) {
+        if (inputs.size() != this.weights.size()) {
+            throw new IllegalArgumentException("size error again");
+        }
+        double sum = 0;
+        for (int i = 0; i < inputs.size(); i++) {
+            sum += inputs.get(i) * this.weights.get(i);
+        }
+        sum += this.bias;
+        return step(sum);
     }
 
     public int step(double num) {
@@ -160,6 +187,18 @@ public class NeuralNet_new {
             }
         }
 
+    }
+
+    public ArrayList getWeights() {
+        return this.weights;
+    }
+
+    public double getBias() {
+        return this.bias;
+    }
+
+    public ArrayList getOutputs() {
+        return this.outputs;
     }
 
 }
