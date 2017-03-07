@@ -80,6 +80,7 @@ public class NeuralNetClient_new {
             }
 
             else if (selection == 3) {
+                System.out.println("Goodbye!");
                 endloop = true;
             }
         }
@@ -140,8 +141,10 @@ public class NeuralNetClient_new {
         }
         else {
             Scanner in = new Scanner(System.in);
-            System.out.print("Enter the file name: ");
+            System.out.print("Enter the file name that contains input values: ");
             String fileName = in.next();
+            System.out.print("Enter the file that you want to save outputs in: ");
+            String fileName2 = in.next();
 
             String newLine;
             File file = new File(fileName);
@@ -159,7 +162,14 @@ public class NeuralNetClient_new {
 
             NeuralNet_new a = new NeuralNet_new(inputs, weights, bias);
             a.generateOutputs();
+            System.out.println("The outputs are: ");
             a.print(a.getOutputs());
+
+            PrintWriter out = new PrintWriter(fileName2, "UTF-8");
+            for (int i = 0; i < a.getOutputs().size(); i++) {
+                out.println(a.getOutputs().get(i));
+            }
+            out.close();
         }
     }
 }
