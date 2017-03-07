@@ -27,7 +27,7 @@ import java.util.Random;
  *
  * @author am049
  */
-public class test {
+public class NeuralNet_new {
 
     private ArrayList<Integer> inputs = new ArrayList<>();
     private ArrayList<Integer> outputs = new ArrayList<>();
@@ -38,7 +38,15 @@ public class test {
     private int numOut;
     private String fileName;
 
-    public test(String fileName) throws FileNotFoundException, IOException {
+    /**
+     * This is the maximum error allowed by the perceptron learning rule When
+     * it's zero, the program can sometimes take a while to converge (due to the
+     * way floats are represented) so this uses a very small number to
+     * effectively do the same.
+     */
+    private static double EPSILON = .5E-4;
+
+    public NeuralNet_new(String fileName) throws FileNotFoundException, IOException {
         //this.numIn = 2;
         //this.numOut = 1;
         //this.inputs = new ArrayList<>(Arrays.asList(0, 0, 0, 1, 1,
@@ -46,16 +54,15 @@ public class test {
         //this.outputs = new ArrayList<>(Arrays.asList(0, 0, 0, 1));
 
         this.fileName = fileName;
-
-        BufferedReader br;
         String newLine;
         File file = new File(this.fileName);
-        br = new BufferedReader(new FileReader(file));
+        BufferedReader br = new BufferedReader(new FileReader(file));
 
         while ((newLine = br.readLine()) != null) {
 
             String[] numbers = newLine.split(",");
-
+            // Get the target outputs (the outputs that we are
+            // actually hoping that the neural network will give us
             outputs.add(Integer.parseInt(numbers[numbers.length - 1]));
             for (int i = 0; i < numbers.length - 1; i++) {
                 inputs.add(Integer.parseInt(numbers[i]));

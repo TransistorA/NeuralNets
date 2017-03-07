@@ -24,7 +24,7 @@ import java.util.Scanner;
  *
  * @author Annan Miao and Michael Matirko
  */
-public class NeuralNetClient {
+public class NeuralNetClient_new {
 
     /**
      * This method is the main method for the Neural Net Client. It calls all of
@@ -75,7 +75,7 @@ public class NeuralNetClient {
         System.out.print("Create ANN\nEnter the file name: ");
         String fileName = in.next();
 
-        NeuralNet a = new NeuralNet(fileName);
+        NeuralNet_new a = new NeuralNet_new(fileName);
         a.run();
 
     }
@@ -89,5 +89,4 @@ public class NeuralNetClient {
     private static void loadExistingConfig() {
 
     }
-
 }
