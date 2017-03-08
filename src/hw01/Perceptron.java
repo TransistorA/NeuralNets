@@ -32,11 +32,13 @@ public class Perceptron {
     private ArrayList<Float> weightArr;
 
     /**
-     * This is the value of the neuron. It is a float so that when it's not set,
-     * it's equal to null. (instead of 0)
+     * This is the value of the neuron.
      */
-    private Float value;
+    private float value;
 
+    /**
+     * This is the activation constant (currently unused)
+     */
     private float ACTIVATION_CONST;
 
     /**
@@ -45,10 +47,17 @@ public class Perceptron {
     private Layer layer;
 
     /**
+     * Has the neuron been initialized or not? I.e, have we done any back
+     * propagation yet?
+     */
+    private boolean status;
+
+    /**
      * The constructor for the perceptron initializes each perceptron with the
      * value passed to it, and random weights to populate the weight list
      *
      * @author Michael Matirko
+     * @param layer
      *
      */
     public Perceptron(Layer layer) {
@@ -91,10 +100,13 @@ public class Perceptron {
      * @author Michael Matirko
      */
     public Float getValue() {
-        if (value != null) {
+        if (this.status) {
+            // If we have assigned it a value
             return value;
         }
         else {
+            // Otherwise, get a value from the other layers
+            this.status = true;
             return this.value = activation(net());
         }
     }
@@ -146,10 +158,10 @@ public class Perceptron {
     }
 
     /**
-     * Wipes the value of the neuron (sets the value back to null)
+     * Wipes the value of the neuron (sets the value back to false)
      */
     public void clean() {
-        this.value = null;
+        this.status = false;
     }
 
     /**

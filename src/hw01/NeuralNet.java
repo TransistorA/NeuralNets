@@ -90,12 +90,44 @@ public class NeuralNet {
         ArrayList<Integer> inputs = arglist.get(0);
         ArrayList<Integer> targetOutput = arglist.get(1);
 
-        int sserror = 0;
-        int inputSize = this.LayerList.get(0).getPerList().size();
-        int numIter = (int) Math.pow(2, inputSize);
+        for (int i = 0; i < inputs.size()) {
+            for (int j = 0; ) {
+                inputpairlist.
+            }
+        }
+
+        float sserror = 0.0f;
 
         do {
-            for (int iter = 0; iter < numIter; iter++) {
+            for (ArrayList<Integer> inpts : inputpairlist) {
+                sserror = 0.0f; //Init sserror
+
+                // Feed in our training values (into the input perceptrons)
+                Layer inputlayer = this.LayerList.get(0);
+                ArrayList<Perceptron> inps = inputla                                        yer.getPerList();
+                for (int i = 0; i < inps.size(); i++) {
+                    int inputvalue = inputs.get(i);
+                    inps.get(i).setValue(inputvalue);
+                }
+
+                // Calculate SSE for the last layer (the output layer)
+                int outputpos = this.LayerList.size() - 1;
+                Layer outputlayer = this.LayerList.get(outputpos);
+                ArrayList<Perceptron> outps = outputlayer.getPerList();
+                // Individual error = target val - actual val
+                for (int i = 0; i < outps.size(); i++) {
+                    float pErr = targetOutput.get(i) - outps.get(i).getValue();
+                    sserror += Math.pow(pErr, 2) / 2;
+                }
+
+                float delta // Reinitialize all of the neurons in the net
+                        // So that we aren't stuck with old data
+                for (int i = 0; i < this.LayerList.size(); i++) {
+                    Layer layer = this.LayerList.get(i);
+                    for (int j = 0; j < layer.getPerList().size(); j++) {
+                        layer.getPerList().get(j).clean();
+                    }
+                }
 
             }
         } while (sserror > EPSILON);
@@ -141,6 +173,8 @@ public class NeuralNet {
     /**
      * This function is a basic step function representing the error for that
      * iteration of the process.
+     *
+     * Honestly this should probably be removed at some point
      *
      * @param sum
      * @return
