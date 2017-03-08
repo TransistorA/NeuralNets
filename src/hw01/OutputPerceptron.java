@@ -65,11 +65,10 @@ public class OutputPerceptron {
         this.bias = -2.4 / this.numIn + r.nextDouble() * 4.8 / this.numIn;
     }
 
-    public void generateDelta() {
+    /*public void generateDelta() {
         generateOutput();
         this.delta = this.error * this.output * (1 - this.output);
-    }
-
+    }*/
     public void print(ArrayList a) {
         for (int i = 0; i < a.size(); i++) {
             System.out.println(a.get(i));
@@ -87,6 +86,7 @@ public class OutputPerceptron {
         sum += this.bias;
         this.output = f(sum);
         this.error = this.targetOutput - this.output;
+        this.delta = this.error * this.output * (1 - this.output);
     }
 
     public double f(double net) {
@@ -94,7 +94,7 @@ public class OutputPerceptron {
     }
 
     public void updateWeights() {
-        generateDelta();
+        //generateDelta();
         for (int i = 0; i < inputs.size(); i++) {
             this.weights.set(i,
                              weights.get(i) + factor * this.delta * inputs.get(

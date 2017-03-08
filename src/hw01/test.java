@@ -28,7 +28,7 @@ public class test {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        ANN_complex a = new ANN_complex(2, 2, 1, new ArrayList<>(Arrays.asList(
+        /*ANN_complex a = new ANN_complex(2, 2, 1, new ArrayList<>(Arrays.asList(
                                         0.0, 0.0, 0.0, 1.0, 1.0,
                                         0.0, 1.0, 1.0)), new ArrayList<>(
                                         Arrays.asList(0.0, 1.0,
@@ -36,7 +36,14 @@ public class test {
         a.createInputLayer();
         a.print(a.getOutput());
         a.calculateSSE();
-        //System.out.println(a.getSSE());
+        //System.out.println(a.getSSE());*/
+
+        OutputPerceptron p = new OutputPerceptron(new ArrayList<>(Arrays.asList(
+                0.0, 0.0)), 1);
+        p.print(p.getWeights());
+        p.generateOutput();
+        p.updateWeights();
+        p.print(p.getWeights());
     }
 
 }
