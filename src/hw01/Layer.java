@@ -52,7 +52,7 @@ public class Layer {
      * @return The previous layer, or null if there is no previous layer
      * @author Michael Matirko
      */
-    public Layer getPrevLayer() {
+    public Layer_list getPrevLayer() {
         if (this.index == 0) {
             return null;
         }
@@ -133,7 +133,6 @@ public class Layer {
             Perceptron p = this.perList.get(i);
             p.setValue(newValues.get(i));
         }
-
     }
 
     @Override

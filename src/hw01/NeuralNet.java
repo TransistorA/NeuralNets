@@ -89,11 +89,12 @@ public class NeuralNet {
 
         ArrayList<Integer> inputs = arglist.get(0);
         ArrayList<Integer> targetOutput = arglist.get(1);
+        int numIn = 2;
 
         // This should take an array of ints and return an array of arrays of
         // ints. Example: Array(1,1,0,0,1,1,0,0) -> Array(Array(1,1), Array(0,0), Array (11)...)
         // Array of Arrays is called inputpairlist.
-        for (int i = 0; i < inputs.size()) {
+        for (int i = 0; i < inputs.size() / numIn; i++) {
             for (int j = 0; ) {
                 inputpairlist.
             }
@@ -123,8 +124,8 @@ public class NeuralNet {
                     sserror += Math.pow(pErr, 2) / 2;
                 }
 
-                float delta // Reinitialize all of the neurons in the net
-                        // So that we aren't stuck with old data
+                float delta; // Reinitialize all of the neurons in the net
+                // So that we aren't stuck with old data
                 for (int i = 0; i < this.LayerList.size(); i++) {
                     Layer_list layer = this.LayerList.get(i);
                     for (int j = 0; j < layer.getPerList().size(); j++) {
