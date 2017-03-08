@@ -46,7 +46,7 @@ public class NeuralNet {
      * This is the ArrayList of Layers used by the Neural Net. They are all
      * individual entities and have their own weights, values, etc...
      */
-    private ArrayList<Layer> LayerList = new ArrayList<>();
+    private ArrayList<Layer_list> LayerList = new ArrayList<>();
 
     /**
      * Construct the neural net - right now, it's a list of layers that all have
@@ -60,15 +60,15 @@ public class NeuralNet {
         //Add two new Layers to the layer list
 
         // INPUT LAYER
-        LayerList.add(new Layer(0, this));
+        LayerList.add(new Layer_list(0, this));
 
         // MIDDLE LAYERS
         for (int i = 0; i < numHidden; i++) {
-            LayerList.add(new Layer(i + 1, this));
+            LayerList.add(new Layer_list(i + 1, this));
         }
 
         // OUTPUT LAYER
-        LayerList.add(new Layer(numHidden + 1, this));
+        LayerList.add(new Layer_list(numHidden + 1, this));
 
     }
 
@@ -90,6 +90,9 @@ public class NeuralNet {
         ArrayList<Integer> inputs = arglist.get(0);
         ArrayList<Integer> targetOutput = arglist.get(1);
 
+        // This should take an array of ints and return an array of arrays of
+        // ints. Example: Array(1,1,0,0,1,1,0,0) -> Array(Array(1,1), Array(0,0), Array (11)...)
+        // Array of Arrays is called inputpairlist.
         for (int i = 0; i < inputs.size()) {
             for (int j = 0; ) {
                 inputpairlist.
@@ -103,8 +106,8 @@ public class NeuralNet {
                 sserror = 0.0f; //Init sserror
 
                 // Feed in our training values (into the input perceptrons)
-                Layer inputlayer = this.LayerList.get(0);
-                ArrayList<Perceptron> inps = inputla                                        yer.getPerList();
+                Layer_list inputlayer = this.LayerList.get(0);
+                ArrayList<Perceptron> inps = inputlayer.getPerList();
                 for (int i = 0; i < inps.size(); i++) {
                     int inputvalue = inputs.get(i);
                     inps.get(i).setValue(inputvalue);
@@ -112,7 +115,7 @@ public class NeuralNet {
 
                 // Calculate SSE for the last layer (the output layer)
                 int outputpos = this.LayerList.size() - 1;
-                Layer outputlayer = this.LayerList.get(outputpos);
+                Layer_list outputlayer = this.LayerList.get(outputpos);
                 ArrayList<Perceptron> outps = outputlayer.getPerList();
                 // Individual error = target val - actual val
                 for (int i = 0; i < outps.size(); i++) {
@@ -123,7 +126,7 @@ public class NeuralNet {
                 float delta // Reinitialize all of the neurons in the net
                         // So that we aren't stuck with old data
                 for (int i = 0; i < this.LayerList.size(); i++) {
-                    Layer layer = this.LayerList.get(i);
+                    Layer_list layer = this.LayerList.get(i);
                     for (int j = 0; j < layer.getPerList().size(); j++) {
                         layer.getPerList().get(j).clean();
                     }
@@ -140,7 +143,7 @@ public class NeuralNet {
      * @return An arraylist of the return floats
      */
     public ArrayList<Float> classify(ArrayList<Integer> inputvals) {
-        Layer input = this.LayerList.get(0);
+        Layer_list input = this.LayerList.get(0);
 
         ArrayList<Float> outputvals = null;
 
@@ -193,7 +196,7 @@ public class NeuralNet {
      * @return A layer - the one that resides at the given index
      * @author Michael Matirko
      */
-    public Layer getLayer(int index) {
+    public Layer_list getLayer(int index) {
         return this.LayerList.get(index);
     }
 

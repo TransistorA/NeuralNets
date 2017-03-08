@@ -44,7 +44,7 @@ public class Perceptron {
     /**
      * This is the layer that the Perceptron resides in
      */
-    private Layer layer;
+    private Layer_list layer;
 
     /**
      * Has the neuron been initialized or not? I.e, have we done any back
@@ -60,7 +60,7 @@ public class Perceptron {
      * @param layer
      *
      */
-    public Perceptron(Layer layer) {
+    public Perceptron(Layer_list layer) {
         Random randnumObj = new Random();
 
         int numweights = layer.getPerList().size();
