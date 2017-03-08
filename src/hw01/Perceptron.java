@@ -63,6 +63,10 @@ public class Perceptron {
         this.delta = delta;
     }
 
+    public double getDelta() {
+        return this.delta;
+    }
+
     public void print(ArrayList a) {
         for (int i = 0; i < a.size(); i++) {
             System.out.println(a.get(i));

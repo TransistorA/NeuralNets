@@ -34,9 +34,9 @@ public class test {
                                         Arrays.asList(0.0, 1.0,
                                                       1.0, 0.0)), 0.1);
         a.createInputLayer();
-        //a.print(a.getOutput());
+        a.print(a.getOutput());
         a.calculateSSE();
-        System.out.println(a.getSSE());
+        //System.out.println(a.getSSE());
     }
 
 }

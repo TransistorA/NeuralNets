@@ -67,7 +67,7 @@ public class OutputPerceptron {
 
     public void generateDelta() {
         generateOutput();
-        this.delta = this.error * this.output * (this.output);
+        this.delta = this.error * this.output * (1 - this.output);
     }
 
     public void print(ArrayList a) {
@@ -94,6 +94,7 @@ public class OutputPerceptron {
     }
 
     public void updateWeights() {
+        generateDelta();
         for (int i = 0; i < inputs.size(); i++) {
             this.weights.set(i,
                              weights.get(i) + factor * this.delta * inputs.get(

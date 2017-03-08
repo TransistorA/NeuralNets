@@ -68,4 +68,8 @@ public class OutputPerceptrons {
         return this.outputs;
     }
 
+    public void update() {
+
+    }
+
 }

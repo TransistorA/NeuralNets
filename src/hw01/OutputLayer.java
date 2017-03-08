@@ -30,7 +30,7 @@ public class OutputLayer {
     private ArrayList<Double> inputs = new ArrayList<>();
     private ArrayList<Double> outputs = new ArrayList<>();
     private ArrayList<Double> targetOutputs = new ArrayList<>();
-    private double sse;
+    private ArrayList<ArrayList<Double>> b = new ArrayList<>();
 
     //private int numGroup;
     public OutputLayer(int numIn, int numOut, ArrayList inputs,
@@ -43,12 +43,12 @@ public class OutputLayer {
     }
 
     public void generateNextInput() {
-        ArrayList<ArrayList<Double>> b = new ArrayList<>();
+        //ArrayList<ArrayList<Double>> b = new ArrayList<>();
         for (int i = 0; i < numOut; i++) {
             OutputPerceptrons a = new OutputPerceptrons(this.inputs,
                                                         this.targetOutputs,
                                                         this.numIn);
-            b.add(a.getOutputs());
+            this.b.add(a.getOutputs());
         }
         ArrayList<Double> nextInputs = new ArrayList<>();
         for (int i = 0; i < b.get(0).size(); i++) {
@@ -67,6 +67,10 @@ public class OutputLayer {
 
     public ArrayList getOutputs() {
         return this.outputs;
+    }
+
+    public void update() {
+
     }
 
 }
