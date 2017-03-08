@@ -104,7 +104,25 @@ public class NeuralNetClient_new {
                 "Do you want to save the correct weights into a file? (y/n) ");
         String yn = in.next();
 
-        NeuralNet_new a = new NeuralNet_new(fileName);
+        ArrayList<Integer> inputs = new ArrayList<>();
+        ArrayList<Integer> outputs = new ArrayList<>();
+
+        String newLine;
+        File file = new File(fileName);
+        BufferedReader br = new BufferedReader(new FileReader(file));
+
+        while ((newLine = br.readLine()) != null) {
+
+            String[] numbers = newLine.split(",");
+            // Get the target outputs (the outputs that we are
+            // actually hoping that the neural network will give us
+            outputs.add(Integer.parseInt(numbers[numbers.length - 1]));
+            for (int i = 0; i < numbers.length - 1; i++) {
+                inputs.add(Integer.parseInt(numbers[i]));
+            }
+        }
+
+        NeuralNet_new a = new NeuralNet_new(inputs, outputs);
         a.generateCorrectWeights();
         weights = a.getWeights();
         bias = a.getBias();
