@@ -49,15 +49,22 @@ public class NeuralNet {
     private ArrayList<Layer> LayerList = new ArrayList<>();
 
     /**
+     * This is the number of inputs to our neural net
+     */
+    private int numInputs;
+
+    /**
      * Construct the neural net - right now, it's a list of layers that all have
      * a certain number of outputs.
      *
      * @param numInputs
      * @param numOutputs
+     * @author Annan Miao
      */
     public NeuralNet(int numInputs, int numHidden, int numHiddenPercep,
                      int numOutputs) {
-        //Add two new Layers to the layer list
+
+        this.numInputs = numInputs;
 
         // INPUT LAYER
         LayerList.add(new Layer(0, this));
@@ -74,8 +81,6 @@ public class NeuralNet {
 
     /**
      * Updates the perceptrons according to the CSV file that was input that
-     *
-     *
      * specifies the new rules to use. It compares the current values and their
      * errors to the actual values, and uses the perceptron learning rule in
      * order to change the output values of the perceptron.
@@ -83,6 +88,7 @@ public class NeuralNet {
      * @param fileName - The name of the file containing the update data
      * @throws FileNotFoundException
      * @throws IOException
+     * @author Equal parts Michael Matirko and Annan Miao
      */
     public void update(String fileName) throws FileNotFoundException, IOException {
         ArrayList<ArrayList<Integer>> arglist = readFile(fileName);
@@ -90,9 +96,22 @@ public class NeuralNet {
         ArrayList<Integer> inputs = arglist.get(0);
         ArrayList<Integer> targetOutput = arglist.get(1);
 
-        for (int i = 0; i < inputs.size()) {
-            for (int j = 0; ) {
-                inputpairlist.
+        // This is an arraylist of all possible input pairs:
+        // ex. if our input values from the truth table are
+        // 00011011, this splits it up in to
+        // Arraylist(AL(0,0), AL(0,1), AL(1,0), AL(1,1)).
+        ArrayList<ArrayList<Integer>> inputpairlist = new ArrayList<>();
+        String ttinputs = inputs.toString();
+        ttinputs = ttinputs.replace("[", "");
+        ttinputs = ttinputs.replace("]", "");
+        ttinputs = ttinputs.replace(",", "");
+        ttinputs = ttinputs.replace(" ", "");
+        for (int i = 0; i < ttinputs.length(); i++) {
+            if (i % numInputs == 0) {
+                ArrayList<Integer> pair = new ArrayList<>();
+                for (int j = 0; j < this.numInputs; j++) {
+                    pair.add(j);
+                }
             }
         }
 
@@ -104,7 +123,7 @@ public class NeuralNet {
 
                 // Feed in our training values (into the input perceptrons)
                 Layer inputlayer = this.LayerList.get(0);
-                ArrayList<Perceptron> inps = inputla                                        yer.getPerList();
+                ArrayList<Perceptron> inps = inputlayer.getPerList();
                 for (int i = 0; i < inps.size(); i++) {
                     int inputvalue = inputs.get(i);
                     inps.get(i).setValue(inputvalue);
@@ -120,8 +139,8 @@ public class NeuralNet {
                     sserror += Math.pow(pErr, 2) / 2;
                 }
 
-                float delta // Reinitialize all of the neurons in the net
-                        // So that we aren't stuck with old data
+                float delta = 0.0f; // Reinitialize all of the neurons in the net
+                // So that we aren't stuck with old data
                 for (int i = 0; i < this.LayerList.size(); i++) {
                     Layer layer = this.LayerList.get(i);
                     for (int j = 0; j < layer.getPerList().size(); j++) {
@@ -134,10 +153,12 @@ public class NeuralNet {
     }
 
     /**
-     * Returns the ArrayList of classification values for the Neural Net
+     * Returns the ArrayList of classification values for the Neural Net. You
+     * have to pass in an arraylist of n input values.
      *
      * @param inputvals
-     * @return An arraylist of the return floats
+     * @return An arraylist of the return float(s)
+     * @author Michael Matirko
      */
     public ArrayList<Float> classify(ArrayList<Integer> inputvals) {
         Layer input = this.LayerList.get(0);
@@ -178,6 +199,7 @@ public class NeuralNet {
      *
      * @param sum
      * @return
+     * @author Annan Miao
      */
     private int errorFunc(float sum) {
         if (sum >= 0) {
@@ -226,4 +248,15 @@ public class NeuralNet {
 
         return returnlist;
     }
+
+    /**
+     * Returns numinputs
+     *
+     * @return The number of inputs, an integer
+     * @author Netbeans generated, Michael Matirko
+     */
+    public int getNumInputs() {
+        return numInputs;
+    }
+
 }

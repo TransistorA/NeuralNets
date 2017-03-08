@@ -66,8 +66,9 @@ public class Perceptron {
         int numweights = layer.getPerList().size();
 
         for (int i = 0; i < numweights; i++) {
-            // Set the weight to a random float between -.5 and .5
-            weightArr.set(i, randnumObj.nextFloat() - (float) 0.5);
+            // Set the weight to a random float between -2.4/m and 2.4/m
+            weightArr.set(i,
+                          (float) (-2.4f * randnumObj.nextDouble() / (float) this.layer.getNeuralNet().getNumInputs()));
         }
 
     }
@@ -75,7 +76,7 @@ public class Perceptron {
     /**
      * Gets the weight array from the perceptron
      *
-     * @return
+     * @return The array of weights
      */
     public ArrayList<Float> getWeightArr() {
         return weightArr;
@@ -87,7 +88,7 @@ public class Perceptron {
      *
      * @param position
      * @param weight
-     * @author Michael Matirko
+     * @author Annan Miao
      */
     public void setWeight(int position, float weight) {
         this.weightArr.set(position, weight);
@@ -111,7 +112,13 @@ public class Perceptron {
         }
     }
 
-    public Float net() {
+    /**
+     * This calculates the net function for the perceptron. It does it based on
+     * the previous perceptrons in the previous layers that lead to it.
+     *
+     * @return A float with the net value
+     */
+    public float net() {
         ArrayList<Perceptron> prevList = this.layer.getPrevLayer().getPerList();
         float net = 0.0f;
 
@@ -138,9 +145,10 @@ public class Perceptron {
      * Tells whether this perceptron is "activated" or not
      *
      * @param net
-     * @return Either 1 or zero, depending on whether the perceptron is
-     * activated based on the sigmoid function
-     * @author Michael Matirko
+     * @return A float - (approximately) 1 or zero, depending on whether the
+     * perceptron is activated based on the sigmoid function
+     * @param the net - a float
+     * @author Annan Miao
      */
     public float activation(float net) {
         float fnet = 1 / (1 + (float) Math.pow(Math.E, -1 * net));
@@ -159,6 +167,8 @@ public class Perceptron {
 
     /**
      * Wipes the value of the neuron (sets the value back to false)
+     *
+     * @author Michael Matirko
      */
     public void clean() {
         this.status = false;
@@ -169,6 +179,7 @@ public class Perceptron {
      * debugging purposes, but also cool to look at)
      *
      * @return A string representing a Perceptron
+     * @author Basically netbeans (this is just generated code), Michael Matirko
      */
     @Override
     public String toString() {

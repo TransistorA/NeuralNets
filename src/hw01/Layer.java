@@ -103,6 +103,16 @@ public class Layer {
     }
 
     /**
+     * Returns the neural net to which this layer belongs
+     *
+     * @return A neural net
+     * @author Michael Matirko
+     */
+    public NeuralNet getNeuralNet() {
+        return this.neuralnet;
+    }
+
+    /**
      * This calculates the net value of that perceptron's weight (currently each
      * perceptron has one weight)
      *
