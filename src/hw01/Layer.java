@@ -29,8 +29,36 @@ public class Layer {
      */
     private ArrayList<Perceptron> perList;
 
-    public Layer() {
+    /**
+     * This is the previous layer's index
+     */
+    private int index;
 
+    /**
+     * This is the NeuralNet that this layer belongs to
+     */
+    private NeuralNet neuralnet;
+
+    public Layer(int index, NeuralNet neuralnet) {
+        //Set the previous layer's index
+        this.index = index;
+        this.neuralnet = neuralnet;
+    }
+
+    /**
+     * Returns the previous layer (provided that this layer isn't an input
+     * layer)
+     *
+     * @return The previous layer, or null if there is no previous layer
+     * @author Michael Matirko
+     */
+    public Layer getPrevLayer() {
+        if (this.index == 0) {
+            return null;
+        }
+        else {
+            return this.neuralnet.getLayer(this.index - 1);
+        }
     }
 
     /**
@@ -100,11 +128,12 @@ public class Layer {
      * @param newValues
      * @return
      */
-    public float setValuesForLayer(ArrayList<Float> newValues) {
+    public void setValuesForLayer(ArrayList<Float> newValues) {
         for (int i = 0; i < this.perList.size(); i++) {
             Perceptron p = this.perList.get(i);
             p.setValue(newValues.get(i));
         }
+
     }
 
     @Override

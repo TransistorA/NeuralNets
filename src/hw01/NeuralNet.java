@@ -38,6 +38,11 @@ public class NeuralNet {
     private static double EPSILON = .5E-4;
 
     /**
+     * This is our learning constant, given to be .3
+     */
+    public float ALPHA = .3f;
+
+    /**
      * This is the ArrayList of Layers used by the Neural Net. They are all
      * individual entities and have their own weights, values, etc...
      */
@@ -50,17 +55,20 @@ public class NeuralNet {
      * @param numInputs
      * @param numOutputs
      */
-    public NeuralNet(int numInputs, int numOutputs) {
+    public NeuralNet(int numInputs, int numHidden, int numHiddenPercep,
+                     int numOutputs) {
         //Add two new Layers to the layer list
 
-        //INPUT LAYER
-        LayerList.add(new Layer());
-        for (int i = 0; i < numInputs; i++) {
-            LayerList.get(0).addPer(new Perceptron(numOutputs));
+        // INPUT LAYER
+        LayerList.add(new Layer(0, this));
+
+        // MIDDLE LAYERS
+        for (int i = 0; i < numHidden; i++) {
+            LayerList.add(new Layer(i + 1, this));
         }
 
-        //OUTPUT LAYER
-        LayerList.add(new Layer());
+        // OUTPUT LAYER
+        LayerList.add(new Layer(numHidden + 1, this));
 
     }
 
@@ -77,6 +85,85 @@ public class NeuralNet {
      * @throws IOException
      */
     public void update(String fileName) throws FileNotFoundException, IOException {
+        ArrayList<ArrayList<Integer>> arglist = readFile(fileName);
+
+        ArrayList<Integer> inputs = arglist.get(0);
+        ArrayList<Integer> targetOutput = arglist.get(1);
+
+        int sserror = 0;
+        int inputSize = this.LayerList.get(0).getPerList().size();
+        int numIter = (int) Math.pow(2, inputSize);
+
+        do {
+            for (int iter = 0; iter < numIter; iter++) {
+
+            }
+        } while (sserror > EPSILON);
+    }
+
+    /**
+     * Returns the ArrayList of classification values for the Neural Net
+     *
+     * @param inputvals
+     * @return An arraylist of the return floats
+     */
+    public ArrayList<Float> classify(ArrayList<Integer> inputvals) {
+        Layer input = this.LayerList.get(0);
+
+        ArrayList<Float> outputvals = null;
+
+        // Set up the input layers
+        for (int i = 0; i < input.getPerList().size(); i++) {
+            input.getPerList().get(i).setValue(inputvals.get(i));
+        }
+
+        // Set everything else to null so that the values are actually
+        // What they're supposed to be
+        for (int i = 1; i < this.LayerList.size(); i++) {
+            for (int j = 0; i < this.LayerList.get(i).getPerList().size(); i++) {
+                Perceptron p = this.LayerList.get(i).getPerList().get(j);
+                p.clean();
+            }
+        }
+
+        // Read from the output layer
+        int lastElem = this.LayerList.size() - 1;
+        int numPerceptrons = this.LayerList.get(lastElem).getPerList().size();
+
+        for (int s = 0; s < numPerceptrons; s++) {
+            float pval = this.LayerList.get(lastElem).getPerList().get(s).getValue();
+            outputvals.add(pval);
+        }
+
+        return outputvals;
+    }
+
+    /**
+     * This function is a basic step function representing the error for that
+     * iteration of the process.
+     *
+     * @param sum
+     * @return
+     */
+    private int errorFunc(float sum) {
+        if (sum >= 0) {
+            return 1;
+        }
+        return 0;
+    }
+
+    /**
+     * Gets the layer at (index) in the layer list
+     *
+     * @param index
+     * @return A layer - the one that resides at the given index
+     * @author Michael Matirko
+     */
+    public Layer getLayer(int index) {
+        return this.LayerList.get(index);
+    }
+
+    public ArrayList<ArrayList<Integer>> readFile(String filename) throws FileNotFoundException, IOException {
         ArrayList<Integer> inputs = new ArrayList<>();
         ArrayList<Integer> targetOutput = new ArrayList<>();
 
@@ -85,7 +172,7 @@ public class NeuralNet {
 
         BufferedReader br = null;
         String newLine = "";
-        File file = new File(fileName);
+        File file = new File(filename);
         br = new BufferedReader(new FileReader(file));
 
         while ((newLine = br.readLine()) != null) {
@@ -99,29 +186,10 @@ public class NeuralNet {
             }
         }
 
-        int sserror = 0;
-        int inputSize = this.LayerList.get(0).getPerList().size();
-        int numIter = (int) Math.pow(2, inputSize);
+        ArrayList<ArrayList<Integer>> returnlist = new ArrayList<>();
+        returnlist.add(inputs);
+        returnlist.add(targetOutput);
 
-        do {
-            for (int iter = 0; iter < numIter; iter++) {
-                //Initialize the ArrayList of ssErrors to be zero for everything
-                ssError.set(iter) = (float) 0.0;
-            }
-        } while (sserror > EPSILON);
-    }
-
-    /**
-     * This function is a basic step function representing the error for that
-     * iteration of the process.
-     *
-     * @param sum
-     * @return
-     */
-    public static int errorFunc(float sum) {
-        if (sum >= 0) {
-            return 1;
-        }
-        return 0;
+        return returnlist;
     }
 }

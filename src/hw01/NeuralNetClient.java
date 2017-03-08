@@ -26,6 +26,8 @@ import java.util.Scanner;
  */
 public class NeuralNetClient {
 
+    static NeuralNet net;
+
     /**
      * This method is the main method for the Neural Net Client. It calls all of
      * the required methods in order to allow the user to use the ANN in the
@@ -78,22 +80,63 @@ public class NeuralNetClient {
         System.out.print("How many inputs should we have? ");
         int numInputs = in.nextInt();
 
+        System.out.print("\nHow many hidden layers should we have? ");
+        int numHidden = in.nextInt();
+
+        System.out.print(
+                "\nHow many perceptrons should we have per hidden layer? ");
+        int numHiddenPer = in.nextInt();
+
         System.out.print("\nHow many outputs should we have? ");
         int numOutputs = in.nextInt();
 
-        NeuralNet net = new NeuralNet(numInputs, numOutputs);
-        net.update("data.csv");
+        net = new NeuralNet(numInputs, numHidden, numHiddenPer, numOutputs);
+
+        System.out.println("     Select one of the following options:   \n   ");
+        System.out.println(" 1) Training Mode for ANN \n                     ");
+        System.out.println(" 2) Classification Mode for ANN \n               ");
+
+        // Get a selection from the user
+        Scanner inputsc = new Scanner(System.in);
+        int selection = inputsc.nextInt();
+
+        // Call the correct method depending on the user's choice
+        if (selection == 1) {
+            trainingMode();
+        }
+        else if (selection == 2) {
+            classificationMode();
+        }
 
     }
 
     /**
      * This method prompts the user to input the location of an existing ANN
-     * config file (in the form of a CSV file).
+     * config file (in the form of a file).
      *
      * @author
      */
     private static void loadExistingConfig() {
 
+    }
+
+    private static void trainingMode() {
+        Scanner in = new Scanner(System.in);
+        while (true) {
+            System.out.println("Enter a CSV file with training data: ");
+            String filename = in.next();
+
+            try {
+                net.update(filename);
+                break;
+            } catch (IOException ex) {
+                System.out.println("File not found!");
+            }
+        }
+    }
+
+    private static void classificationMode() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
 }
