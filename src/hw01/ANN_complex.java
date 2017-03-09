@@ -32,7 +32,7 @@ public class ANN_complex {
     private ArrayList<Double> targetOutputs = new ArrayList<>();
     private double sse;
     private double minsse;
-    private PerceptronLayer a;
+    private NeuronLayer a;
     private OutputLayer b;
 
     private int numGroup;
@@ -53,7 +53,7 @@ public class ANN_complex {
         for (int i = 0; i < this.numNeoronHidden; i++) {
             emptyWeights.add(0.0);
         }
-        a = new PerceptronLayer(this.numIn, this.numNeoronHidden, this.inputs,
+        a = new NeuronLayer(this.numIn, this.numNeoronHidden, this.inputs,
                       emptyWeights);
 
         b = new OutputLayer(this.numNeoronHidden, this.numOut,
