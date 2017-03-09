@@ -1,0 +1,7 @@
+For the two-layer perceptron, we create ANN_simple to represent multiple inputs and one output. ANNClient_simple is the main function where you can train and classify the neural net. For training, we have example files and.csv and or.csv. For classification, we have example file andinput.csv. You can see that the simple ANN do not work on example training input xor.csv.
+
+For neural net with hidden layers. We create ANN_complex, which is a neural net with one input layer, one hidden layer and one output layer. In this case, layer class is dependent on neorons class, and neorons class is dependent on neoron class. Neoron class builds multiple inputs and one single outputs. Neorons class builds Neorons with different groups of inputs, and the number of inputs keeps the same for each group (like (0,0),(0,1),(1,0),(1,1) are 4 groups of 2 inputs). NeoronLayer is not really a layer. It represents the connection between the nodes of two adjacent layers.
+
+This structure is the same for OutputLayer, OutputPerceptrons and Perceptron classes. ANNClient_complex is the main function that builds a neoral net with 2 inputs, 1 output and 4 nodes in hidden layer. You can enter the required minSSE to get the output after learning.
+
+The ANN_complex is not perfectly implemented because I do not find the most appropriate structure for building neural nets. The present version has a lot of subclasses and looks unclear. We will improve that in hw2.
