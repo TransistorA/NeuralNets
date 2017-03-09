@@ -66,9 +66,11 @@ public class Perceptrons {
     }
 
     public void update(ArrayList<Double> deltas) {
-        for (Perceptron e : this.plist) {
-            e.setDelta(deltas.get(this.plist.indexOf(e)));
+        for (int i = 0; i < this.plist.size(); i++) {
+            Perceptron e = this.plist.get(i);
+            e.setDelta(deltas.get(i));
             e.updateWeights();
+            this.plist.set(i, e);
         }
     }
 

@@ -32,7 +32,7 @@ public class ANN_complex {
     private ArrayList<Double> targetOutputs = new ArrayList<>();
     private double sse;
     private double minsse;
-    private Layer a;
+    private PerceptronLayer a;
     private OutputLayer b;
 
     private int numGroup;
@@ -53,7 +53,7 @@ public class ANN_complex {
         for (int i = 0; i < this.numNeoronHidden; i++) {
             emptyWeights.add(0.0);
         }
-        a = new Layer(this.numIn, this.numNeoronHidden, this.inputs,
+        a = new PerceptronLayer(this.numIn, this.numNeoronHidden, this.inputs,
                       emptyWeights);
 
         b = new OutputLayer(this.numNeoronHidden, this.numOut,
@@ -78,7 +78,7 @@ public class ANN_complex {
             throw new IllegalArgumentException("size error");
         }
         for (int i = 0; i < this.outputs.size(); i++) {
-            sse += Math.pow(this.targetOutputs.get(i) - this.outputs.get(i), 2) / 2;
+            sse += Math.pow(this.targetOutputs.get(i) - this.outputs.get(i), 2) / 2 / numIn;
         }
         this.sse = sse;
     }
@@ -88,8 +88,8 @@ public class ANN_complex {
     }
 
     public void updateWeights() {
-
         b.update();
+        a.update(b.getSumWeights());
     }
 
 }

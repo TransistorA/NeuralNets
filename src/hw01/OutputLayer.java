@@ -32,7 +32,7 @@ public class OutputLayer {
     private ArrayList<Double> targetOutputs = new ArrayList<>();
     private ArrayList<ArrayList<Double>> arrayListofOutputs = new ArrayList<>();
     private ArrayList<OutputPerceptrons> arrayPerceptrons = new ArrayList<>();
-    private ArrayList<Double> sumweights;
+    private ArrayList<ArrayList<Double>> sumweights = new ArrayList<>();
 
     //private int numGroup;
     public OutputLayer(int numIn, int numOut, ArrayList inputs,
@@ -50,7 +50,7 @@ public class OutputLayer {
             OutputPerceptrons a = new OutputPerceptrons(this.inputs,
                                                         this.targetOutputs,
                                                         this.numIn);
-            sumweights = a.getWeights();
+            this.sumweights.add(a.getWeights());
             this.arrayPerceptrons.add(a);
             this.arrayListofOutputs.add(a.getOutputs());
         }
