@@ -30,7 +30,9 @@ public class OutputLayer {
     private ArrayList<Double> inputs = new ArrayList<>();
     private ArrayList<Double> outputs = new ArrayList<>();
     private ArrayList<Double> targetOutputs = new ArrayList<>();
-    private ArrayList<ArrayList<Double>> b = new ArrayList<>();
+    private ArrayList<ArrayList<Double>> arrayListofOutputs = new ArrayList<>();
+    private ArrayList<OutputPerceptrons> arrayPerceptrons = new ArrayList<>();
+    private ArrayList<Double> sumweights;
 
     //private int numGroup;
     public OutputLayer(int numIn, int numOut, ArrayList inputs,
@@ -48,12 +50,14 @@ public class OutputLayer {
             OutputPerceptrons a = new OutputPerceptrons(this.inputs,
                                                         this.targetOutputs,
                                                         this.numIn);
-            this.b.add(a.getOutputs());
+            sumweights = a.getWeights();
+            this.arrayPerceptrons.add(a);
+            this.arrayListofOutputs.add(a.getOutputs());
         }
         ArrayList<Double> nextInputs = new ArrayList<>();
-        for (int i = 0; i < b.get(0).size(); i++) {
-            for (int j = 0; j < b.size(); j++) {
-                nextInputs.add(b.get(j).get(i));
+        for (int i = 0; i < arrayListofOutputs.get(0).size(); i++) {
+            for (int j = 0; j < arrayListofOutputs.size(); j++) {
+                nextInputs.add(arrayListofOutputs.get(j).get(i));
             }
         }
         this.outputs = nextInputs;
@@ -70,7 +74,13 @@ public class OutputLayer {
     }
 
     public void update() {
+        for (OutputPerceptrons e : this.arrayPerceptrons) {
+            e.update();
+        }
+    }
 
+    public ArrayList getSumWeights() {
+        return this.sumweights;
     }
 
 }

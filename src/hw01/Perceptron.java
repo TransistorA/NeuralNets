@@ -32,6 +32,7 @@ public class Perceptron {
     private int numOut;
     private double delta;
     private static double factor = 0.2;
+    private double sumweight; // for error calculation
 
     /**
      * This is the maximum error allowed by the perceptron learning rule When
@@ -43,13 +44,14 @@ public class Perceptron {
      * @param inputs
      * @param delta
      */
-    public Perceptron(ArrayList inputs) {
+    public Perceptron(ArrayList inputs, double sumweight) {
         //this.inputs = new ArrayList<>(Arrays.asList(0, 0, 0, 1, 1,
         //                                          0, 1, 1));
         //this.outputs = new ArrayList<>(Arrays.asList(0, 0, 0, 1));
         this.inputs = inputs;
         this.numOut = 1;
         this.numIn = this.inputs.size();
+        this.sumweight = sumweight;
 
         Random r = new Random();
         for (int i = 0; i < numIn; i++) {
@@ -57,6 +59,7 @@ public class Perceptron {
                     -2.4 / this.numIn + r.nextDouble() * 4.8 / this.numIn);
         }
         this.bias = -2.4 / this.numIn + r.nextDouble() * 4.8 / this.numIn;
+        generateOutput();
     }
 
     public void setDelta(double delta) {
@@ -83,6 +86,9 @@ public class Perceptron {
         }
         sum += this.bias;
         this.output = f(sum);
+
+        this.delta = this.sumweight * this.output * (1 - this.output);
+
     }
 
     public double f(double net) {

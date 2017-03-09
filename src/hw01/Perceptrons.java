@@ -28,10 +28,12 @@ public class Perceptrons {
     private ArrayList<Double> outputs = new ArrayList<>();
     private int numGroup;
     private ArrayList<Perceptron> plist = new ArrayList<>();
+    private double sumweight; // the weight that connects the output node to the node next to output node
 
-    public Perceptrons(ArrayList inputs, int numIn) {
+    public Perceptrons(ArrayList inputs, int numIn, double sumweight) {
         this.numIn = numIn;
         this.inputs = inputs;
+        this.sumweight = sumweight;
         buildLayer();
         generateOutputs();
     }
@@ -42,8 +44,7 @@ public class Perceptrons {
         for (int i = 0; i < this.numGroup; i++) {
             ArrayList newInputs = new ArrayList(inputs.subList(i * numIn,
                                                                i * numIn + numIn));
-            Perceptron e = new Perceptron(newInputs);
-            e.generateOutput();
+            Perceptron e = new Perceptron(newInputs, this.sumweight);
             this.plist.add(e);
         }
     }
@@ -62,6 +63,13 @@ public class Perceptrons {
 
     public ArrayList getOutputs() {
         return this.outputs;
+    }
+
+    public void update(ArrayList<Double> deltas) {
+        for (Perceptron e : this.plist) {
+            e.setDelta(deltas.get(this.plist.indexOf(e)));
+            e.updateWeights();
+        }
     }
 
 }

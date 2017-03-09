@@ -29,19 +29,28 @@ public class Layer {
     //private int numNeoronHidden;
     private ArrayList<Double> inputs = new ArrayList<>();
     private ArrayList<Double> outputs = new ArrayList<>();
-    //private int numGroup;
+    private ArrayList<Double> nextWeights = new ArrayList<>();
 
-    public Layer(int numIn, int numOut, ArrayList inputs) {
+    //private int numGroup;
+    public Layer(int numIn, int numOut, ArrayList inputs,
+                 ArrayList<Double> nextWeights) {
         this.numIn = numIn;
         this.numOut = numOut;
         this.inputs = inputs;
+        this.nextWeights = nextWeights;
+
         generateNextInput();
     }
 
     public void generateNextInput() {
+        if (this.nextWeights.size() != numOut) {
+            throw new IllegalArgumentException("size error");
+        }
+
         ArrayList<ArrayList<Double>> b = new ArrayList<>();
         for (int i = 0; i < numOut; i++) {
-            Perceptrons a = new Perceptrons(this.inputs, this.numIn);
+            Perceptrons a = new Perceptrons(this.inputs, this.numIn,
+                                            this.nextWeights.get(i));
             b.add(a.getOutputs());
         }
         ArrayList<Double> nextInputs = new ArrayList<>();
@@ -61,6 +70,10 @@ public class Layer {
 
     public ArrayList getOutputs() {
         return this.outputs;
+    }
+
+    public void setSumWeight(ArrayList<Double> sumweight) {
+        this.nextWeights = sumweight;
     }
 
 }

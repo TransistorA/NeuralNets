@@ -29,6 +29,7 @@ public class OutputPerceptrons {
     private ArrayList<Double> targetOutputs = new ArrayList<>();
     private int numGroup;
     private ArrayList<OutputPerceptron> plist = new ArrayList<>();
+    private ArrayList<Double> weights;
 
     public OutputPerceptrons(ArrayList inputs, ArrayList targetOutputs,
                              int numIn) {
@@ -47,8 +48,8 @@ public class OutputPerceptrons {
                                                                i * numIn + numIn));
             OutputPerceptron e = new OutputPerceptron(newInputs,
                                                       this.targetOutputs.get(i));
-            e.generateOutput();
             this.plist.add(e);
+            this.weights = e.getWeights();
         }
     }
 
@@ -68,8 +69,14 @@ public class OutputPerceptrons {
         return this.outputs;
     }
 
-    public void update() {
+    public ArrayList getWeights() {
+        return this.weights;
+    }
 
+    public void update() {
+        for (OutputPerceptron e : this.plist) {
+            e.updateWeights();
+        }
     }
 
 }

@@ -32,6 +32,8 @@ public class ANN_complex {
     private ArrayList<Double> targetOutputs = new ArrayList<>();
     private double sse;
     private double minsse;
+    private Layer a;
+    private OutputLayer b;
 
     private int numGroup;
 
@@ -43,13 +45,20 @@ public class ANN_complex {
         this.inputs = inputs;
         this.targetOutputs = targetOutputs;
         this.minsse = minsse;
+        createLayers();
     }
 
-    public void createInputLayer() {
-        Layer a = new Layer(this.numIn, this.numNeoronHidden, this.inputs);
+    public void createLayers() {
+        ArrayList<Double> emptyWeights = new ArrayList<>();
+        for (int i = 0; i < this.numNeoronHidden; i++) {
+            emptyWeights.add(0.0);
+        }
+        a = new Layer(this.numIn, this.numNeoronHidden, this.inputs,
+                      emptyWeights);
 
-        OutputLayer b = new OutputLayer(this.numNeoronHidden, this.numOut,
-                                        a.getOutputs(), this.targetOutputs);
+        b = new OutputLayer(this.numNeoronHidden, this.numOut,
+                            a.getOutputs(), this.targetOutputs);
+        a.setSumWeight(b.getSumWeights());
         this.outputs = b.getOutputs();
     }
 
@@ -80,6 +89,7 @@ public class ANN_complex {
 
     public void updateWeights() {
 
+        b.update();
     }
 
 }
