@@ -22,7 +22,7 @@ import java.util.Random;
  *
  * @author Michael Matirko and Annan Miao
  */
-public class Perceptron {
+public class Perceptron implements java.io.Serializable {
 
     /**
      * This array is an array of all of the weights of the perceptron's weights.
@@ -53,6 +53,11 @@ public class Perceptron {
     private boolean status;
 
     /**
+     * What is the error currently associated with this perceptron?
+     */
+    private float error;
+
+    /**
      * The constructor for the perceptron initializes each perceptron with the
      * value passed to it, and random weights to populate the weight list
      *
@@ -63,12 +68,21 @@ public class Perceptron {
     public Perceptron(Layer layer) {
         Random randnumObj = new Random();
 
-        int numweights = layer.getPerList().size();
+        int numweights;
+        if (layer.getIndex() != 0) {
+            numweights = layer.getPrevLayer().getPerList().size();
+        }
+        else {
+            numweights = 0;
+        }
+
+        this.layer = layer;
+        this.weightArr = new ArrayList<>();
 
         for (int i = 0; i < numweights; i++) {
             // Set the weight to a random float between -2.4/m and 2.4/m
-            weightArr.set(i,
-                          (float) (-2.4f * randnumObj.nextDouble() / (float) this.layer.getNeuralNet().getNumInputs()));
+            weightArr.add(
+                    (float) (-2.4f * randnumObj.nextDouble() / (float) this.layer.getNeuralNet().getNumInputs()));
         }
 
     }
@@ -119,7 +133,12 @@ public class Perceptron {
      * @return A float with the net value
      */
     public float net() {
-        ArrayList<Perceptron> prevList = this.layer.getPrevLayer().getPerList();
+        ArrayList<Perceptron> prevList = new ArrayList<>();
+
+        if (this.layer.getIndex() != 0) {
+            prevList = this.layer.getPrevLayer().getPerList();
+        }
+
         float net = 0.0f;
 
         for (int i = 0; i < prevList.size(); i++) {
@@ -172,6 +191,7 @@ public class Perceptron {
      */
     public void clean() {
         this.status = false;
+        //this.value = 0.0f;
     }
 
     /**
@@ -183,7 +203,37 @@ public class Perceptron {
      */
     @Override
     public String toString() {
-        return "Perceptron{" + "weightArr = " + weightArr + ", value=" + value + '}';
+        return "Perceptron{" + "weightArr = " + weightArr + ", value=" + value + " status =" + this.status + '}';
+    }
+
+    /**
+     * Gets the layer that the perceptron is in
+     *
+     * @return the layer that the perceptron is in
+     * @author Michael Matirko
+     */
+    public Layer getLayer() {
+        return layer;
+    }
+
+    /**
+     * Get the error associated with this perceptron
+     *
+     * @return error (a float)
+     * @author Michael Matirko
+     */
+    public float getError() {
+        return error;
+    }
+
+    /**
+     * Set the error associated with this perceptron
+     *
+     * @param error
+     * @author Michael Matirko
+     */
+    public void setError(float error) {
+        this.error = error;
     }
 
 }

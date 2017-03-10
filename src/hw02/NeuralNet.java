@@ -27,7 +27,7 @@ import java.util.ArrayList;
  *
  * @author Michael Matirko and Annan Miao
  */
-public class NeuralNet {
+public class NeuralNet implements java.io.Serializable {
 
     /**
      * This is the maximum error allowed by the perceptron learning rule When
@@ -35,7 +35,7 @@ public class NeuralNet {
      * way floats are represented) so this uses a very small number to
      * effectively do the same.
      */
-    private static double EPSILON = .5E-4;
+    private static double EPSILON = .05;
 
     /**
      * This is our learning constant, given to be .3
@@ -67,15 +67,15 @@ public class NeuralNet {
         this.numInputs = numInputs;
 
         // INPUT LAYER
-        LayerList.add(new Layer(0, this));
+        LayerList.add(new Layer(0, numInputs, this));
 
         // MIDDLE LAYERS
         for (int i = 0; i < numHidden; i++) {
-            LayerList.add(new Layer(i + 1, this));
+            LayerList.add(new Layer(i + 1, numHiddenPercep, this));
         }
 
         // OUTPUT LAYER
-        LayerList.add(new Layer(numHidden + 1, this));
+        LayerList.add(new Layer(numHidden + 1, numOutputs, this));
 
     }
 
@@ -112,14 +112,18 @@ public class NeuralNet {
                 for (int j = 0; j < this.numInputs; j++) {
                     pair.add(j);
                 }
+                inputpairlist.add(pair);
             }
         }
 
-        float sserror = 0.0f;
+        // Pick a big value to init sserror
+        float sserror = 10000;
+        System.out.println(inputpairlist);
+        System.out.println(targetOutput);
 
         do {
             for (ArrayList<Integer> inpts : inputpairlist) {
-                sserror = 0.0f; //Init sserror
+                sserror = 0.0f; //Re-init sserror
 
                 // Feed in our training values (into the input perceptrons)
                 Layer inputlayer = this.LayerList.get(0);
@@ -135,8 +139,74 @@ public class NeuralNet {
                 ArrayList<Perceptron> outps = outputlayer.getPerList();
                 // Individual error = target val - actual val
                 for (int i = 0; i < outps.size(); i++) {
-                    float pErr = targetOutput.get(i) - outps.get(i).getValue();
+                    // Z is our current output perceptron
+                    Perceptron z = outps.get(i);
+                    float pErr = targetOutput.get(i) - z.getValue();
                     sserror += Math.pow(pErr, 2) / 2;
+
+                    //Calculate w_jk(i+1)
+                    // I THINK THIS IS THE PROBLEM HERE
+                    for (int x = 0; x < z.getWeightArr().size(); x++) {
+                        // First, get the perceptron j that k is connected to
+                        Perceptron j = z.getLayer().getPrevLayer().getPerList().get(
+                                x);
+                        float curweight = z.getWeightArr().get(x);
+                        // Calculate sigma for the output perceptron
+                        float deltaout = z.getValue() * (1 - z.getValue()) * pErr;
+                        //Calculate w_jk for the next iteration
+                        float w_jk = curweight + ALPHA * j.getValue() * deltaout;
+                        //Set the new weight
+                        //???????????????????????????????????
+                        z.setWeight(x, w_jk);
+                    }
+
+                }
+
+                //Iterate through the hidden (middle) layers (and the input layer)
+                //
+                int index_last_hidden = this.LayerList.size() - 2;
+                for (int l = index_last_hidden; l >= 0; l--) {
+                    // Iterate through the perceptrons in the middle layers
+                    Layer hdnlayer = this.LayerList.get(index_last_hidden);
+                    ArrayList<Perceptron> hdnpercep = hdnlayer.getPerList();
+
+                    for (int perindex = 0; perindex < hdnpercep.size(); perindex++) {
+                        Perceptron pc = hdnpercep.get(perindex);
+                        Layer nextlayer = hdnlayer.getNextLayer();
+                        // Calculate delta_j (little delta)
+                        float sum = 0;
+                        // Iterate through all the perceptron in the next layer
+                        // In order to calculate the sum of previous errors/weights
+                        for (int s = 0; s < nextlayer.getPerList().size(); s++) {
+                            Perceptron nextp = nextlayer.getPerList().get(s);
+                            // Get the weight of the next perceptron
+                            Float weight = nextp.getWeightArr().get(perindex);
+                            // Add this weight to the total sum
+                            sum += weight * nextp.getError();
+
+                            // Finally, add everything together to calculate del_j
+                            // and set it
+                            float del_j = pc.getValue() * (1 - pc.getValue()) * sum;
+                            pc.setError(del_j);
+                        }
+
+                    }
+
+                }
+
+                // Iterate through all of the non output layers
+                for (int iter = 0; iter > this.LayerList.size() - 2; iter++) {
+                    Layer curlayer = this.LayerList.get(iter);
+                    ArrayList<Perceptron> curplist = curlayer.getPerList();
+                    for (int p = 0; p > curplist.size(); p++) {
+                        Perceptron per = curplist.get(p);
+                        float del_w = ALPHA * per.getValue() * per.getError();
+                        for (int w = 0; w > per.getWeightArr().size(); w++) {
+                            //Set the weight to be delta w + current weight
+                            float curweight = per.getWeightArr().get(w);
+                            per.setWeight(w, del_w + curweight);
+                        }
+                    }
                 }
 
                 float delta = 0.0f; // Reinitialize all of the neurons in the net
@@ -163,7 +233,7 @@ public class NeuralNet {
     public ArrayList<Float> classify(ArrayList<Integer> inputvals) {
         Layer input = this.LayerList.get(0);
 
-        ArrayList<Float> outputvals = null;
+        ArrayList<Float> outputvals = new ArrayList<>();
 
         // Set up the input layers
         for (int i = 0; i < input.getPerList().size(); i++) {
@@ -176,14 +246,18 @@ public class NeuralNet {
             for (int j = 0; i < this.LayerList.get(i).getPerList().size(); i++) {
                 Perceptron p = this.LayerList.get(i).getPerList().get(j);
                 p.clean();
+                System.out.println("Cleaned " + p);
             }
         }
 
         // Read from the output layer
         int lastElem = this.LayerList.size() - 1;
-        int numPerceptrons = this.LayerList.get(lastElem).getPerList().size();
+        int numPerceptrons = this.LayerList.get(lastElem).getPerList().size() - 1;
+        System.out.println(
+                "output elem is: " + lastElem + " and it has percep: " + this.LayerList.get(
+                        lastElem).getPerList());
 
-        for (int s = 0; s < numPerceptrons; s++) {
+        for (int s = 0; s <= numPerceptrons; s++) {
             float pval = this.LayerList.get(lastElem).getPerList().get(s).getValue();
             outputvals.add(pval);
         }
@@ -256,7 +330,23 @@ public class NeuralNet {
      * @author Netbeans generated, Michael Matirko
      */
     public int getNumInputs() {
-        return numInputs;
+        return this.numInputs;
+    }
+
+    public ArrayList<Layer> getLayerList() {
+        return LayerList;
+    }
+
+    @Override
+    public String toString() {
+        String returnstr = "";
+
+        for (int i = 0; i < this.LayerList.size(); i++) {
+            String perlist = this.getLayer(i).getPerList().toString();
+            returnstr += perlist;
+        }
+
+        return returnstr;
     }
 
 }

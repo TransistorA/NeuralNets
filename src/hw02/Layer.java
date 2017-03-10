@@ -22,12 +22,12 @@ import java.util.ArrayList;
  *
  * @author mjrm001
  */
-public class Layer {
+public class Layer implements java.io.Serializable {
 
     /**
      * This is the list of perceptrons in this layer
      */
-    private ArrayList<Perceptron> perList;
+    private ArrayList<Perceptron> perList = new ArrayList<>();
 
     /**
      * This is the previous layer's index
@@ -39,10 +39,15 @@ public class Layer {
      */
     private NeuralNet neuralnet;
 
-    public Layer(int index, NeuralNet neuralnet) {
+    public Layer(int index, int numPerceptrons, NeuralNet neuralnet) {
         //Set the previous layer's index
         this.index = index;
         this.neuralnet = neuralnet;
+
+        for (int i = 0; i < numPerceptrons; i++) {
+            this.perList.add(new Perceptron(this));
+        }
+
     }
 
     /**
@@ -62,13 +67,29 @@ public class Layer {
     }
 
     /**
+     * Returns the next layer (provided that this layer isn't an output layer)
+     *
+     * @return The previous layer, or null if there is no next layer
+     * @author Michael Matirko
+     */
+    public Layer getNextLayer() {
+        // Make sure this isn't an output layer
+        if (this.index == this.neuralnet.getLayerList().size() - 1) {
+            return null;
+        }
+        else {
+            return this.neuralnet.getLayer(this.index + 1);
+        }
+    }
+
+    /**
      * Gets the perceptron list for the layer
      *
      * @return An ArrayList of perceptrons
      * @author Michael Matirko
      */
     public ArrayList<Perceptron> getPerList() {
-        return perList;
+        return this.perList;
     }
 
     /**
@@ -149,6 +170,16 @@ public class Layer {
     @Override
     public String toString() {
         return "Layer{ " + " perList = " + perList + '}';
+    }
+
+    /**
+     * Returns the index of the current layer
+     *
+     * @return The index - an int
+     * @author Michael Matirko
+     */
+    public int getIndex() {
+        return index;
     }
 
 }
