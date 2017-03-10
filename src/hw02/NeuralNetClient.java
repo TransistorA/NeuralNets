@@ -83,8 +83,8 @@ public class NeuralNetClient {
      */
     public static void createNewANN() throws FileNotFoundException, IOException {
         Scanner in = new Scanner(System.in);
-
-        System.out.println("******************Create ANN******************");
+        clear();
+        System.out.println("********************Create ANN********************");
 
         System.out.print("How many inputs should we have? ");
         NeuralNetClient.numInputs = in.nextInt();
@@ -100,7 +100,8 @@ public class NeuralNetClient {
         int numOutputs = in.nextInt();
 
         net = new NeuralNet(numInputs, numHidden, numHiddenPer, numOutputs);
-
+        clear();
+        System.out.println("***************Neural Net Created*****************");
         System.out.println("     Select one of the following options:   \n   ");
         System.out.println(" 1) Training Mode for ANN \n                     ");
         System.out.println(" 2) Classification Mode for ANN \n               ");
@@ -120,14 +121,16 @@ public class NeuralNetClient {
     }
 
     private static void trainingMode() throws IOException {
+        clear();
+        System.out.println("************Train Neural Net From File************");
         Scanner in = new Scanner(System.in);
-        System.out.println("Enter a CSV file with training data: ");
+        System.out.print("Enter a CSV file with training data: ");
         String filename = in.next();
 
         net.update(filename);
-
+        clear();
         System.out.println("**************Neural Net Trained****************");
-        System.out.println("     Select one of the following options:   \n   ");
+        System.out.println("Select one of the following options:   \n   ");
         System.out.println(" 1) Training Mode for ANN \n                     ");
         System.out.println(" 2) Classification Mode for ANN \n               ");
         System.out.println(" 3) Save Configuration for ANN \n                ");
@@ -258,6 +261,11 @@ public class NeuralNetClient {
         int selection = inputsc.nextInt();
 
         return selection;
+    }
+
+    public static void clear() {
+        System.out.println("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n");
+        System.out.println("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n");
     }
 
 }

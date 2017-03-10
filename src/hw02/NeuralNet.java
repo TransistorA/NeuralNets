@@ -17,11 +17,14 @@
 package hw02;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 
 /**
  *
@@ -54,6 +57,16 @@ public class NeuralNet implements java.io.Serializable {
     private int numInputs;
 
     /**
+     * This is the training data output to a string
+     */
+    private String trainingData;
+
+    /**
+     * The file name for the logfile
+     */
+    private final String LOGFILE_NAME = "ANNTrainingLog.csv";
+
+    /**
      * Construct the neural net - right now, it's a list of layers that all have
      * a certain number of outputs.
      *
@@ -65,6 +78,9 @@ public class NeuralNet implements java.io.Serializable {
                      int numOutputs) {
 
         this.numInputs = numInputs;
+
+        // Create the logfile leader for this Net
+        createLogHeader();
 
         // INPUT LAYER
         LayerList.add(new Layer(0, numInputs, this));
@@ -120,6 +136,7 @@ public class NeuralNet implements java.io.Serializable {
         float sserror = 10000;
         System.out.println(inputpairlist);
         System.out.println(targetOutput);
+        int epoch = 0;
 
         do {
             for (ArrayList<Integer> inpts : inputpairlist) {
@@ -167,7 +184,7 @@ public class NeuralNet implements java.io.Serializable {
                 int index_last_hidden = this.LayerList.size() - 2;
                 for (int l = index_last_hidden; l >= 0; l--) {
                     // Iterate through the perceptrons in the middle layers
-                    Layer hdnlayer = this.LayerList.get(index_last_hidden);
+                    Layer hdnlayer = this.LayerList.get(l);
                     ArrayList<Perceptron> hdnpercep = hdnlayer.getPerList();
 
                     for (int perindex = 0; perindex < hdnpercep.size(); perindex++) {
@@ -187,6 +204,7 @@ public class NeuralNet implements java.io.Serializable {
                             // Finally, add everything together to calculate del_j
                             // and set it
                             float del_j = pc.getValue() * (1 - pc.getValue()) * sum;
+                            System.out.println("SET DEL_J EQUAL TO " + del_j);
                             pc.setError(del_j);
                         }
 
@@ -195,13 +213,16 @@ public class NeuralNet implements java.io.Serializable {
                 }
 
                 // Iterate through all of the non output layers
-                for (int iter = 0; iter > this.LayerList.size() - 2; iter++) {
+                for (int iter = 0; iter < this.LayerList.size() - 2; iter++) {
                     Layer curlayer = this.LayerList.get(iter);
                     ArrayList<Perceptron> curplist = curlayer.getPerList();
-                    for (int p = 0; p > curplist.size(); p++) {
+                    for (int p = 0; p < curplist.size(); p++) {
                         Perceptron per = curplist.get(p);
                         float del_w = ALPHA * per.getValue() * per.getError();
-                        for (int w = 0; w > per.getWeightArr().size(); w++) {
+                        // HERE IS THE PROBLEM
+                        System.out.println(
+                                "DEL W IS " + del_w + " \n" + "PER.getError is " + per.getError() + " \nper.getval is " + per.getValue());
+                        for (int w = 0; w < per.getWeightArr().size(); w++) {
                             //Set the weight to be delta w + current weight
                             float curweight = per.getWeightArr().get(w);
                             per.setWeight(w, del_w + curweight);
@@ -219,7 +240,18 @@ public class NeuralNet implements java.io.Serializable {
                 }
 
             }
+
+            //Increment epoch
+            epoch += 1;
+
+            // Update the log file for the current iteration
+            this.trainingData += "------\n Epoch " + epoch + " \n";
+            this.trainingData += this.toString();
+
         } while (sserror > EPSILON);
+
+        //Store the results in the log file.
+        LogEnd();
     }
 
     /**
@@ -239,7 +271,7 @@ public class NeuralNet implements java.io.Serializable {
         for (int i = 0; i < input.getPerList().size(); i++) {
             input.getPerList().get(i).setValue(inputvals.get(i));
         }
-
+        System.out.println(this);
         // Set everything else to null so that the values are actually
         // What they're supposed to be
         for (int i = 1; i < this.LayerList.size(); i++) {
@@ -340,13 +372,52 @@ public class NeuralNet implements java.io.Serializable {
     @Override
     public String toString() {
         String returnstr = "";
-
+        returnstr += "^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n";
         for (int i = 0; i < this.LayerList.size(); i++) {
             String perlist = this.getLayer(i).getPerList().toString();
-            returnstr += perlist;
+            returnstr += perlist + '\n';
         }
-
+        returnstr += "^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n";
         return returnstr;
+    }
+
+    /**
+     * Creates the header for the log file. Information regarding formatting
+     * date objects used from TutorialsPoint
+     *
+     * @see <a href https://www.tutorialspoint.com/java/java_date_time.htm>
+     * https://www.tutorialspoint.com/java/java_date_time.htm </a>
+     *
+     * @author Michael Matirko
+     *
+     */
+    public void createLogHeader() {
+        Date startdate = new Date();
+
+        this.trainingData += "ANN - Neural Net, " + String.format("$T $D",
+                                                                  startdate);
+    }
+
+    /**
+     * Creates the end for the log file and writes it to a file. Information
+     * regarding formatting date objects used from TutorialsPoint
+     *
+     * @see <a href https://www.tutorialspoint.com/java/java_date_time.htm>
+     * https://www.tutorialspoint.com/java/java_date_time.htm </a>
+     *
+     * @author Michael Matirko
+     *
+     */
+    public void LogEnd() throws IOException {
+        Date enddate = new Date();
+        this.trainingData += "--------------------\nTrainingEnded\n";
+        this.trainingData += String.format("$T $D", enddate);
+
+        //Write the log data to the output file
+        BufferedWriter br = new BufferedWriter(new FileWriter(LOGFILE_NAME));
+        br.write(this.trainingData);
+        br.close();
+
     }
 
 }
