@@ -38,7 +38,7 @@ public class NeuralNet implements java.io.Serializable {
      * way floats are represented) so this uses a very small number to
      * effectively do the same.
      */
-    private static double EPSILON = .05;
+    private static double EPSILON = .2;
 
     /**
      * This is our learning constant, given to be .3
@@ -139,7 +139,11 @@ public class NeuralNet implements java.io.Serializable {
         int epoch = 0;
 
         do {
+            int target_counter = 0;
             for (ArrayList<Integer> inpts : inputpairlist) {
+                System.out.println(
+                        "inpts is: " + inpts.toString() + " target is: " + targetOutput.get(
+                        target_counter));
                 sserror = 0.0f; //Re-init sserror
 
                 // Feed in our training values (into the input perceptrons)
@@ -158,7 +162,7 @@ public class NeuralNet implements java.io.Serializable {
                 for (int i = 0; i < outps.size(); i++) {
                     // Z is our current output perceptron
                     Perceptron z = outps.get(i);
-                    float pErr = targetOutput.get(i) - z.getValue();
+                    float pErr = targetOutput.get(target_counter) - z.getValue();
                     sserror += Math.pow(pErr, 2) / 2;
 
                     //Calculate w_jk(i+1)
@@ -191,7 +195,7 @@ public class NeuralNet implements java.io.Serializable {
                         Perceptron pc = hdnpercep.get(perindex);
                         Layer nextlayer = hdnlayer.getNextLayer();
                         // Calculate delta_j (little delta)
-                        float sum = 0;
+                        float sum = 1;
                         // Iterate through all the perceptron in the next layer
                         // In order to calculate the sum of previous errors/weights
                         for (int s = 0; s < nextlayer.getPerList().size(); s++) {
@@ -204,7 +208,8 @@ public class NeuralNet implements java.io.Serializable {
                             // Finally, add everything together to calculate del_j
                             // and set it
                             float del_j = pc.getValue() * (1 - pc.getValue()) * sum;
-                            System.out.println("SET DEL_J EQUAL TO " + del_j);
+                            System.out.println(
+                                    "SET DEL_J EQUAL TO " + del_j + " because sum is " + sum);
                             pc.setError(del_j);
                         }
 
@@ -239,6 +244,8 @@ public class NeuralNet implements java.io.Serializable {
                     }
                 }
 
+                // Increment the target counter
+                target_counter += 1;
             }
 
             //Increment epoch

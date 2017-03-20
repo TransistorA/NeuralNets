@@ -7,7 +7,7 @@
 * Time: 1:07:11 PM
 *
 * Project: csci205_hw
-* Package: hw02
+* Package: hw021
 * File: NeuralNetClient
 * Description:
 * This file is the primary interface that a user will
