@@ -115,7 +115,7 @@ public class Perceptron implements java.io.Serializable {
      * @author Michael Matirko
      */
     public Float getValue() {
-        if (this.status) {
+        if (false & this.status) {
             // If we have assigned it a value
             return value;
         }
@@ -191,7 +191,7 @@ public class Perceptron implements java.io.Serializable {
      */
     public void clean() {
         this.status = false;
-        //this.value = 0.0f;
+        this.value = 0.0f;
     }
 
     /**

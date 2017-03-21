@@ -38,7 +38,7 @@ public class NeuralNet implements java.io.Serializable {
      * way floats are represented) so this uses a very small number to
      * effectively do the same.
      */
-    private static double EPSILON = .2;
+    private static double EPSILON = .01;
 
     /**
      * This is our learning constant, given to be .3
@@ -122,16 +122,41 @@ public class NeuralNet implements java.io.Serializable {
         ttinputs = ttinputs.replace("]", "");
         ttinputs = ttinputs.replace(",", "");
         ttinputs = ttinputs.replace(" ", "");
+
+        System.out.println("ttip " + ttinputs);
+
+        ArrayList<Integer> imp = new ArrayList<>();
+        imp.add(0);
+        imp.add(0);
+        inputpairlist.add(imp);
+        imp = new ArrayList<>();
+
+        imp.add(0);
+        imp.add(1);
+        inputpairlist.add(imp);
+        imp = new ArrayList<>();
+
+        imp.add(1);
+        imp.add(0);
+        inputpairlist.add(imp);
+        imp = new ArrayList<>();
+
+        imp.add(1);
+        imp.add(1);
+        inputpairlist.add(imp);
+
+        /*
         for (int i = 0; i < ttinputs.length(); i++) {
             if (i % numInputs == 0) {
+                System.out.println("i mod numinputs" + i + " % " + numInputs);
                 ArrayList<Integer> pair = new ArrayList<>();
-                for (int j = 0; j < this.numInputs; j++) {
+                for (int j = i; j < this.numInputs; j++) {
                     pair.add(j);
                 }
                 inputpairlist.add(pair);
             }
         }
-
+         */
         // Pick a big value to init sserror
         float sserror = 10000;
         System.out.println(inputpairlist);
@@ -155,6 +180,7 @@ public class NeuralNet implements java.io.Serializable {
                 }
 
                 // Calculate SSE for the last layer (the output layer)
+                sserror = 0;
                 int outputpos = this.LayerList.size() - 1;
                 Layer outputlayer = this.LayerList.get(outputpos);
                 ArrayList<Perceptron> outps = outputlayer.getPerList();
@@ -175,7 +201,7 @@ public class NeuralNet implements java.io.Serializable {
                         // Calculate sigma for the output perceptron
                         float deltaout = z.getValue() * (1 - z.getValue()) * pErr;
                         //Calculate w_jk for the next iteration
-                        float w_jk = curweight + ALPHA * j.getValue() * deltaout;
+                        float w_jk = curweight - ALPHA * j.getValue() * deltaout;
                         //Set the new weight
                         //???????????????????????????????????
                         z.setWeight(x, w_jk);
@@ -274,19 +300,20 @@ public class NeuralNet implements java.io.Serializable {
 
         ArrayList<Float> outputvals = new ArrayList<>();
 
-        // Set up the input layers
-        for (int i = 0; i < input.getPerList().size(); i++) {
-            input.getPerList().get(i).setValue(inputvals.get(i));
-        }
-        System.out.println(this);
         // Set everything else to null so that the values are actually
         // What they're supposed to be
-        for (int i = 1; i < this.LayerList.size(); i++) {
+        for (int i = 0; i < this.LayerList.size(); i++) {
             for (int j = 0; i < this.LayerList.get(i).getPerList().size(); i++) {
                 Perceptron p = this.LayerList.get(i).getPerList().get(j);
                 p.clean();
-                System.out.println("Cleaned " + p);
+                System.out.println(
+                        "Cleaned " + p + " which has layer index " + p.getLayer().getIndex());
             }
+        }
+
+        // Set up the input layers
+        for (int i = 0; i < input.getPerList().size(); i++) {
+            input.getPerList().get(i).setValue(inputvals.get(i));
         }
 
         // Read from the output layer
@@ -298,7 +325,7 @@ public class NeuralNet implements java.io.Serializable {
 
         for (int s = 0; s <= numPerceptrons; s++) {
             float pval = this.LayerList.get(lastElem).getPerList().get(s).getValue();
-            outputvals.add(pval);
+            outputvals.add(activated(pval));
         }
 
         return outputvals;
@@ -427,4 +454,13 @@ public class NeuralNet implements java.io.Serializable {
 
     }
 
+    // Is our neuron activated or not?
+    public float activated(float neuronvalue) {
+        if (neuronvalue >= .5) {
+            return 1;
+        }
+        else {
+            return 0;
+        }
+    }
 }
