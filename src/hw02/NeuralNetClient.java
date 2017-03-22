@@ -176,8 +176,10 @@ public class NeuralNetClient {
 
         System.out.println(inputpairlist);
         for (int i = 0; i < inputpairlist.size(); i++) {
-            System.out.println("Trying input pair " + inputpairlist.get(i));
-            System.out.println(net.classify(inputpairlist.get(i)));
+            System.out.println(
+                    "Trying input pair " + inputpairlist.get(i) + " output is " + net.classify(
+                    inputpairlist.get(i)));
+
         }
 
     }
@@ -263,6 +265,11 @@ public class NeuralNetClient {
         return selection;
     }
 
+    /**
+     * Clears the screen
+     *
+     * @author Annan Miao
+     */
     public static void clear() {
         System.out.println("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n");
         System.out.println("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n");

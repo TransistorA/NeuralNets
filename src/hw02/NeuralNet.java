@@ -38,7 +38,7 @@ public class NeuralNet implements java.io.Serializable {
      * way floats are represented) so this uses a very small number to
      * effectively do the same.
      */
-    private static double EPSILON = .01;
+    private static double EPSILON = .1;
 
     /**
      * This is our learning constant, given to be .3
@@ -124,7 +124,7 @@ public class NeuralNet implements java.io.Serializable {
         ttinputs = ttinputs.replace(" ", "");
 
         System.out.println("ttip " + ttinputs);
-
+        System.out.println(targetOutput);
         ArrayList<Integer> imp = new ArrayList<>();
         imp.add(0);
         imp.add(0);
@@ -319,9 +319,9 @@ public class NeuralNet implements java.io.Serializable {
         // Read from the output layer
         int lastElem = this.LayerList.size() - 1;
         int numPerceptrons = this.LayerList.get(lastElem).getPerList().size() - 1;
-        System.out.println(
-                "output elem is: " + lastElem + " and it has percep: " + this.LayerList.get(
-                        lastElem).getPerList());
+        //System.out.println(
+        //"output elem is: " + lastElem + " and it has percep: " + this.LayerList.get(
+        //lastElem).getPerList());
 
         for (int s = 0; s <= numPerceptrons; s++) {
             float pval = this.LayerList.get(lastElem).getPerList().get(s).getValue();
@@ -359,6 +359,15 @@ public class NeuralNet implements java.io.Serializable {
         return this.LayerList.get(index);
     }
 
+    /**
+     * Reads in a file (used for training the neural net, etc)
+     *
+     * @param filename
+     * @return An arraylist of integers
+     * @throws FileNotFoundException
+     * @throws IOException
+     * @author Annan Miao
+     */
     public ArrayList<ArrayList<Integer>> readFile(String filename) throws FileNotFoundException, IOException {
         ArrayList<Integer> inputs = new ArrayList<>();
         ArrayList<Integer> targetOutput = new ArrayList<>();
@@ -399,6 +408,12 @@ public class NeuralNet implements java.io.Serializable {
         return this.numInputs;
     }
 
+    /**
+     * Returns the layerlist for the layer
+     *
+     * @return The layerlist
+     * @author Annan Miao
+     */
     public ArrayList<Layer> getLayerList() {
         return LayerList;
     }
@@ -454,7 +469,13 @@ public class NeuralNet implements java.io.Serializable {
 
     }
 
-    // Is our neuron activated or not?
+    /**
+     * Is our neuron activated or not?
+     *
+     * @param neuronvalue
+     * @return A float (1 or 0) depending on whether it's activated or not
+     * @author Annan Miao
+     */
     public float activated(float neuronvalue) {
         if (neuronvalue >= .5) {
             return 1;

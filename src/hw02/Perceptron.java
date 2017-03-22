@@ -91,6 +91,7 @@ public class Perceptron implements java.io.Serializable {
      * Gets the weight array from the perceptron
      *
      * @return The array of weights
+     * @author Netbeans generated, Michael Matirko
      */
     public ArrayList<Float> getWeightArr() {
         return weightArr;
@@ -131,6 +132,7 @@ public class Perceptron implements java.io.Serializable {
      * the previous perceptrons in the previous layers that lead to it.
      *
      * @return A float with the net value
+     * @author Annan Miao and Michael Matirko
      */
     public float net() {
         ArrayList<Perceptron> prevList = new ArrayList<>();
@@ -187,7 +189,7 @@ public class Perceptron implements java.io.Serializable {
     /**
      * Wipes the value of the neuron (sets the value back to false)
      *
-     * @author Michael Matirko
+     * @author Annan Miao
      */
     public void clean() {
         this.status = false;
