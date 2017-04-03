@@ -15,7 +15,6 @@
 * ****************************************
  */
 package hw02;
-
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -25,13 +24,11 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
-
 /**
  *
  * @author Michael Matirko and Annan Miao
  */
 public class NeuralNet implements java.io.Serializable {
-
     /**
      * This is the maximum error allowed by the perceptron learning rule When
      * it's zero, the program can sometimes take a while to converge (due to the
@@ -39,33 +36,27 @@ public class NeuralNet implements java.io.Serializable {
      * effectively do the same.
      */
     private static double EPSILON = .1;
-
     /**
      * This is our learning constant, given to be .3
      */
     public float ALPHA = .3f;
-
     /**
      * This is the ArrayList of Layers used by the Neural Net. They are all
      * individual entities and have their own weights, values, etc...
      */
     private ArrayList<Layer> LayerList = new ArrayList<>();
-
     /**
      * This is the number of inputs to our neural net
      */
     private int numInputs;
-
     /**
      * This is the training data output to a string
      */
     private String trainingData;
-
     /**
      * The file name for the logfile
      */
     private final String LOGFILE_NAME = "ANNTrainingLog.csv";
-
     /**
      * Construct the neural net - right now, it's a list of layers that all have
      * a certain number of outputs.
@@ -76,25 +67,18 @@ public class NeuralNet implements java.io.Serializable {
      */
     public NeuralNet(int numInputs, int numHidden, int numHiddenPercep,
                      int numOutputs) {
-
         this.numInputs = numInputs;
-
         // Create the logfile leader for this Net
         createLogHeader();
-
         // INPUT LAYER
         LayerList.add(new Layer(0, numInputs, this));
-
         // MIDDLE LAYERS
         for (int i = 0; i < numHidden; i++) {
             LayerList.add(new Layer(i + 1, numHiddenPercep, this));
         }
-
         // OUTPUT LAYER
         LayerList.add(new Layer(numHidden + 1, numOutputs, this));
-
     }
-
     /**
      * Updates the perceptrons according to the CSV file that was input that
      * specifies the new rules to use. It compares the current values and their
@@ -108,10 +92,8 @@ public class NeuralNet implements java.io.Serializable {
      */
     public void update(String fileName) throws FileNotFoundException, IOException {
         ArrayList<ArrayList<Integer>> arglist = readFile(fileName);
-
         ArrayList<Integer> inputs = arglist.get(0);
         ArrayList<Integer> targetOutput = arglist.get(1);
-
         // This is an arraylist of all possible input pairs:
         // ex. if our input values from the truth table are
         // 00011011, this splits it up in to
@@ -122,7 +104,6 @@ public class NeuralNet implements java.io.Serializable {
         ttinputs = ttinputs.replace("]", "");
         ttinputs = ttinputs.replace(",", "");
         ttinputs = ttinputs.replace(" ", "");
-
         System.out.println("ttip " + ttinputs);
         System.out.println(targetOutput);
         ArrayList<Integer> imp = new ArrayList<>();
@@ -130,21 +111,17 @@ public class NeuralNet implements java.io.Serializable {
         imp.add(0);
         inputpairlist.add(imp);
         imp = new ArrayList<>();
-
         imp.add(0);
         imp.add(1);
         inputpairlist.add(imp);
         imp = new ArrayList<>();
-
         imp.add(1);
         imp.add(0);
         inputpairlist.add(imp);
         imp = new ArrayList<>();
-
         imp.add(1);
         imp.add(1);
         inputpairlist.add(imp);
-
         /*
         for (int i = 0; i < ttinputs.length(); i++) {
             if (i % numInputs == 0) {
@@ -162,7 +139,6 @@ public class NeuralNet implements java.io.Serializable {
         System.out.println(inputpairlist);
         System.out.println(targetOutput);
         int epoch = 0;
-
         do {
             int target_counter = 0;
             for (ArrayList<Integer> inpts : inputpairlist) {
@@ -170,7 +146,6 @@ public class NeuralNet implements java.io.Serializable {
                         "inpts is: " + inpts.toString() + " target is: " + targetOutput.get(
                         target_counter));
                 sserror = 0.0f; //Re-init sserror
-
                 // Feed in our training values (into the input perceptrons)
                 Layer inputlayer = this.LayerList.get(0);
                 ArrayList<Perceptron> inps = inputlayer.getPerList();
@@ -178,7 +153,6 @@ public class NeuralNet implements java.io.Serializable {
                     int inputvalue = inputs.get(i);
                     inps.get(i).setValue(inputvalue);
                 }
-
                 // Calculate SSE for the last layer (the output layer)
                 sserror = 0;
                 int outputpos = this.LayerList.size() - 1;
@@ -190,7 +164,6 @@ public class NeuralNet implements java.io.Serializable {
                     Perceptron z = outps.get(i);
                     float pErr = targetOutput.get(target_counter) - z.getValue();
                     sserror += Math.pow(pErr, 2) / 2;
-
                     //Calculate w_jk(i+1)
                     // I THINK THIS IS THE PROBLEM HERE
                     for (int x = 0; x < z.getWeightArr().size(); x++) {
@@ -206,9 +179,7 @@ public class NeuralNet implements java.io.Serializable {
                         //???????????????????????????????????
                         z.setWeight(x, w_jk);
                     }
-
                 }
-
                 //Iterate through the hidden (middle) layers (and the input layer)
                 //
                 int index_last_hidden = this.LayerList.size() - 2;
@@ -216,7 +187,6 @@ public class NeuralNet implements java.io.Serializable {
                     // Iterate through the perceptrons in the middle layers
                     Layer hdnlayer = this.LayerList.get(l);
                     ArrayList<Perceptron> hdnpercep = hdnlayer.getPerList();
-
                     for (int perindex = 0; perindex < hdnpercep.size(); perindex++) {
                         Perceptron pc = hdnpercep.get(perindex);
                         Layer nextlayer = hdnlayer.getNextLayer();
@@ -230,7 +200,6 @@ public class NeuralNet implements java.io.Serializable {
                             Float weight = nextp.getWeightArr().get(perindex);
                             // Add this weight to the total sum
                             sum += weight * nextp.getError();
-
                             // Finally, add everything together to calculate del_j
                             // and set it
                             float del_j = pc.getValue() * (1 - pc.getValue()) * sum;
@@ -238,11 +207,8 @@ public class NeuralNet implements java.io.Serializable {
                                     "SET DEL_J EQUAL TO " + del_j + " because sum is " + sum);
                             pc.setError(del_j);
                         }
-
                     }
-
                 }
-
                 // Iterate through all of the non output layers
                 for (int iter = 0; iter < this.LayerList.size() - 2; iter++) {
                     Layer curlayer = this.LayerList.get(iter);
@@ -260,7 +226,6 @@ public class NeuralNet implements java.io.Serializable {
                         }
                     }
                 }
-
                 float delta = 0.0f; // Reinitialize all of the neurons in the net
                 // So that we aren't stuck with old data
                 for (int i = 0; i < this.LayerList.size(); i++) {
@@ -269,24 +234,18 @@ public class NeuralNet implements java.io.Serializable {
                         layer.getPerList().get(j).clean();
                     }
                 }
-
                 // Increment the target counter
                 target_counter += 1;
             }
-
             //Increment epoch
             epoch += 1;
-
             // Update the log file for the current iteration
             this.trainingData += "------\n Epoch " + epoch + " \n";
             this.trainingData += this.toString();
-
         } while (sserror > EPSILON);
-
         //Store the results in the log file.
         LogEnd();
     }
-
     /**
      * Returns the ArrayList of classification values for the Neural Net. You
      * have to pass in an arraylist of n input values.
@@ -297,9 +256,7 @@ public class NeuralNet implements java.io.Serializable {
      */
     public ArrayList<Float> classify(ArrayList<Integer> inputvals) {
         Layer input = this.LayerList.get(0);
-
         ArrayList<Float> outputvals = new ArrayList<>();
-
         // Set everything else to null so that the values are actually
         // What they're supposed to be
         for (int i = 0; i < this.LayerList.size(); i++) {
@@ -310,27 +267,22 @@ public class NeuralNet implements java.io.Serializable {
                         "Cleaned " + p + " which has layer index " + p.getLayer().getIndex());
             }
         }
-
         // Set up the input layers
         for (int i = 0; i < input.getPerList().size(); i++) {
             input.getPerList().get(i).setValue(inputvals.get(i));
         }
-
         // Read from the output layer
         int lastElem = this.LayerList.size() - 1;
         int numPerceptrons = this.LayerList.get(lastElem).getPerList().size() - 1;
         //System.out.println(
         //"output elem is: " + lastElem + " and it has percep: " + this.LayerList.get(
         //lastElem).getPerList());
-
         for (int s = 0; s <= numPerceptrons; s++) {
             float pval = this.LayerList.get(lastElem).getPerList().get(s).getValue();
             outputvals.add(activated(pval));
         }
-
         return outputvals;
     }
-
     /**
      * This function is a basic step function representing the error for that
      * iteration of the process.
@@ -347,7 +299,6 @@ public class NeuralNet implements java.io.Serializable {
         }
         return 0;
     }
-
     /**
      * Gets the layer at (index) in the layer list
      *
@@ -358,7 +309,6 @@ public class NeuralNet implements java.io.Serializable {
     public Layer getLayer(int index) {
         return this.LayerList.get(index);
     }
-
     /**
      * Reads in a file (used for training the neural net, etc)
      *
@@ -371,17 +321,13 @@ public class NeuralNet implements java.io.Serializable {
     public ArrayList<ArrayList<Integer>> readFile(String filename) throws FileNotFoundException, IOException {
         ArrayList<Integer> inputs = new ArrayList<>();
         ArrayList<Integer> targetOutput = new ArrayList<>();
-
         //ssError for each set of inputs
         ArrayList<Float> ssError = new ArrayList<>();
-
         BufferedReader br = null;
         String newLine = "";
         File file = new File(filename);
         br = new BufferedReader(new FileReader(file));
-
         while ((newLine = br.readLine()) != null) {
-
             String[] numbers = newLine.split(",");
             // Get the target outputs (the outputs that we are
             // actually hoping that the neural network will give us
@@ -390,14 +336,11 @@ public class NeuralNet implements java.io.Serializable {
                 inputs.add(Integer.parseInt(numbers[i]));
             }
         }
-
         ArrayList<ArrayList<Integer>> returnlist = new ArrayList<>();
         returnlist.add(inputs);
         returnlist.add(targetOutput);
-
         return returnlist;
     }
-
     /**
      * Returns numinputs
      *
@@ -407,7 +350,6 @@ public class NeuralNet implements java.io.Serializable {
     public int getNumInputs() {
         return this.numInputs;
     }
-
     /**
      * Returns the layerlist for the layer
      *
@@ -417,7 +359,6 @@ public class NeuralNet implements java.io.Serializable {
     public ArrayList<Layer> getLayerList() {
         return LayerList;
     }
-
     @Override
     public String toString() {
         String returnstr = "";
@@ -429,7 +370,6 @@ public class NeuralNet implements java.io.Serializable {
         returnstr += "^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n";
         return returnstr;
     }
-
     /**
      * Creates the header for the log file. Information regarding formatting
      * date objects used from TutorialsPoint
@@ -442,11 +382,9 @@ public class NeuralNet implements java.io.Serializable {
      */
     public void createLogHeader() {
         Date startdate = new Date();
-
         this.trainingData += "ANN - Neural Net, " + String.format("$T $D",
                                                                   startdate);
     }
-
     /**
      * Creates the end for the log file and writes it to a file. Information
      * regarding formatting date objects used from TutorialsPoint
@@ -461,14 +399,11 @@ public class NeuralNet implements java.io.Serializable {
         Date enddate = new Date();
         this.trainingData += "--------------------\nTrainingEnded\n";
         this.trainingData += String.format("$T $D", enddate);
-
         //Write the log data to the output file
         BufferedWriter br = new BufferedWriter(new FileWriter(LOGFILE_NAME));
         br.write(this.trainingData);
         br.close();
-
     }
-
     /**
      * Is our neuron activated or not?
      *
