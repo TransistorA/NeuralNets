@@ -11,7 +11,7 @@ import java.util.Random;
  *
  * @author user
  */
-public class Perceptron {
+public class Perceptron implements java.io.Serializable {
 
     private int numInput;
     private double[] weights, inputs, weightsdelta;
@@ -91,8 +91,8 @@ public class Perceptron {
             this.weights[i] += this.momentum * this.weightsdelta[i] + this.learningFactor * this.inputs[i] * this.delta;
             this.weightsdelta[i] = this.learningFactor * this.inputs[i] * this.delta;
         }
-        this.bias += this.momentum * biasdelta - this.learningFactor * this.delta;
-        this.biasdelta = -this.learningFactor * this.delta;
+        this.bias += this.momentum * biasdelta + this.learningFactor * this.delta;
+        this.biasdelta = this.learningFactor * this.delta;
         generateOutput();
     }
 

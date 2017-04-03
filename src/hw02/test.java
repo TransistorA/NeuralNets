@@ -5,7 +5,12 @@
  */
 package hw02;
 
-import java.util.Arrays;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 
 /**
  *
@@ -15,50 +20,54 @@ public class test {
 
     /**
      * @param args the command line arguments
+     * @throws java.io.FileNotFoundException
      */
-    public static void main(String[] args) {
+    public static void main(String[] args) throws FileNotFoundException, IOException, ClassNotFoundException {
         double[] a = {0, 0};
-        double[] b = {0};
-        double[] c = {1, 0};
-        double[] d = {1};
+        double[] b = {1};
+        double[] c = {0, 1};
+        double[] d = {0};
+        double[] a1 = {1, 0};
+        double[] b1 = {0};
+        double[] c1 = {1, 1};
+        double[] d1 = {1};
+
         NeuralNet n = new NeuralNet(c, d, 3);
 
-        int count = 0;
-        while (count < 1000 && n.getSSE(c, d) > 0.01) {
-            n.update(c, d);
-            count += 1;
+        ObjectOutputStream file = new ObjectOutputStream(new FileOutputStream(
+                "ANN.ser"));
+
+        file.writeObject(n);
+        file.close();
+
+        ObjectInputStream ois = new ObjectInputStream(new FileInputStream(
+                "ANN.ser"));
+
+        NeuralNet net = (NeuralNet) ois.readObject();
+
+        net.update(a, b);
+        /*int count = 0;
+        boolean perfect = n.getSSE(c, d) < 0.02 && n.getSSE(a, b) < 0.02;
+        while (count < 100000) {
+            while (n.getSSE(c, d) > 0.02) {
+                if (perfect) {
+                    System.out.println("perfect");
+                    break;
+                }
+                n.update(c, d);
+                count += 1;
+            }
+            while (n.getSSE(a, b) > 0.02) {
+                if (perfect) {
+                    System.out.println("perfect");
+                    break;
+                }
+                n.update(a, b);
+                count += 1;
+            }
+
         }
         System.out.println(count);
-        System.out.println(Arrays.toString(n.getOutput(c, d)));
-
-        /*int count = 0;
-        while (count < 10000) {
-            while (n.getSSE(c, d) > 0.25) {
-                n.update(c, d);
-            }
-            count += 1;
-
-            if (n.getSSE(c, d) < 0.25 && n.getSSE(a, b) < 0.25) {
-                System.out.println("haha1");
-                System.out.println(n.getSSE(c, d) + "  " + n.getSSE(a, b));
-                break;
-            }
-
-            while (n.getSSE(a, b) > 0.25) {
-                n.update(a, b);
-            }
-            count += 1;
-
-            if (n.getSSE(c, d) < 0.25 && n.getSSE(a, b) < 0.25) {
-                System.out.println("haha1");
-                System.out.println(n.getSSE(c, d) + "  " + n.getSSE(a, b));
-                break;
-            }
-        }
-        if (count >= 1000) {
-            System.out.println("xixi");
-        }
-
         System.out.println(Arrays.toString(n.getOutput(c, d)));
         System.out.println(n.getSSE(c, d));*/
     }

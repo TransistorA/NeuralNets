@@ -5,18 +5,20 @@
  */
 package hw02;
 
+import java.util.Arrays;
+
 /**
  *
  * @author user
  */
-public class HiddenLayer {
+public class HiddenLayer implements java.io.Serializable {
 
     Perceptron[] perlist;
     double[] inputs;
     double[] outputs;
     int numPerceptron;
-    private double[][] weights;
-    private double[] bias;
+    double[][] weights;
+    double[] bias;
 
     public HiddenLayer(int numPerceptron, double[] inputs) {
         this.perlist = new Perceptron[numPerceptron];
@@ -30,12 +32,13 @@ public class HiddenLayer {
             Perceptron a = new Perceptron(inputs);
             perlist[i] = a;
         }
-        generateOutputs();
 
         for (int i = 0; i < this.numPerceptron; i++) {
             this.weights[i] = this.perlist[i].getWeights();
             this.bias[i] = this.perlist[i].getBias();
         }
+
+        generateOutputs();
     }
 
     public HiddenLayer(int numPerceptron, double[] inputs, double[][] weights,
@@ -56,7 +59,6 @@ public class HiddenLayer {
 
     public void generateOutputs() {
         for (int i = 0; i < this.numPerceptron; i++) {
-            //Perceptron a = this.perlist[i];
             outputs[i] = this.perlist[i].getOutput();
         }
     }
@@ -66,6 +68,12 @@ public class HiddenLayer {
     }
 
     public void update(Perceptron[] perlist) {
+
+        System.out.println("hidden before weights" + Arrays.toString(
+                this.getWeights()[0]));
+        System.out.println(
+                "hidden before bias" + Arrays.toString(this.getBias()));
+
         double error = 0;
         for (int a = 0; a < this.numPerceptron; a++) {
             for (int b = 0; b < perlist.length; b++) {
@@ -76,8 +84,16 @@ public class HiddenLayer {
             Perceptron a = this.perlist[i];
             a.update(error);
             this.perlist[i] = a;
+            this.bias[i] = a.getBias();
+            this.weights[i] = a.getWeights();
         }
         generateOutputs();
+
+        System.out.println("hidden after weights" + Arrays.toString(
+                this.getWeights()[0]));
+        System.out.println(
+                "hidden after bias" + Arrays.toString(this.getBias()));
+
     }
 
     public Perceptron[] getPerlist() {

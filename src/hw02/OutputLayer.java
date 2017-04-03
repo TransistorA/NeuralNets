@@ -43,13 +43,17 @@ public class OutputLayer extends HiddenLayer {
     }
 
     public void update() {
+
         for (int i = 0; i < this.numPerceptron; i++) {
             Perceptron a = this.perlist[i];
             a.update(this.desiredOutputs[i] - this.outputs[i]);
             this.perlist[i] = a;
+            this.bias[i] = a.getBias();
+            this.weights[i] = a.getWeights();
         }
         generateOutputs();
         calculateError();
+
     }
 
 }

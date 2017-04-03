@@ -9,7 +9,7 @@ package hw02;
  *
  * @author user
  */
-public class NeuralNet {
+public class NeuralNet implements java.io.Serializable {
 
     private double[] inputs;
     private double[] desiredOutputs;
@@ -42,21 +42,24 @@ public class NeuralNet {
     }
 
     public void update(double[] inputs, double[] desiredOutputs) {
+
         this.inputs = inputs;
         this.desiredOutputs = desiredOutputs;
         this.in = new InputLayer(this.numInputs, this.inputs);
 
-        this.out.update();
-        this.hidden.update(this.out.getPerlist());
         this.out = new OutputLayer(this.numOutputs, this.hidden.getOutputs(),
                                    this.out.getWeights(),
                                    this.out.getBias(), this.desiredOutputs);
         this.hidden = new HiddenLayer(this.numPerHidden, in.getOutputs(),
                                       this.hidden.getWeights(),
                                       this.hidden.getBias());
+
+        this.out.update();
+        this.hidden.update(this.out.getPerlist());
         this.sse = this.out.getSSE();
 
         generateOutputs();
+
     }
 
     public void generateOutputs() {
