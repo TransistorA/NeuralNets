@@ -15,41 +15,32 @@
 * ****************************************
  */
 package hw02;
-
 import java.util.ArrayList;
-
 /**
  *
  * @author mjrm001
  */
 public class Layer implements java.io.Serializable {
-
     /**
      * This is the list of perceptrons in this layer
      */
     private ArrayList<Perceptron> perList = new ArrayList<>();
-
     /**
      * This is the previous layer's index
      */
     private int index;
-
     /**
      * This is the NeuralNet that this layer belongs to
      */
     private NeuralNet neuralnet;
-
     public Layer(int index, int numPerceptrons, NeuralNet neuralnet) {
         //Set the previous layer's index
         this.index = index;
         this.neuralnet = neuralnet;
-
         for (int i = 0; i < numPerceptrons; i++) {
             this.perList.add(new Perceptron(this));
         }
-
     }
-
     /**
      * Returns the previous layer (provided that this layer isn't an input
      * layer)
@@ -65,7 +56,6 @@ public class Layer implements java.io.Serializable {
             return this.neuralnet.getLayer(this.index - 1);
         }
     }
-
     /**
      * Returns the next layer (provided that this layer isn't an output layer)
      *
@@ -81,7 +71,6 @@ public class Layer implements java.io.Serializable {
             return this.neuralnet.getLayer(this.index + 1);
         }
     }
-
     /**
      * Gets the perceptron list for the layer
      *
@@ -91,7 +80,6 @@ public class Layer implements java.io.Serializable {
     public ArrayList<Perceptron> getPerList() {
         return this.perList;
     }
-
     /**
      * Sets the perceptron list for the layer
      *
@@ -101,7 +89,6 @@ public class Layer implements java.io.Serializable {
     public void setPerList(ArrayList<Perceptron> perList) {
         this.perList = perList;
     }
-
     /**
      * Sets a specific perceptron in the layer
      *
@@ -112,7 +99,6 @@ public class Layer implements java.io.Serializable {
     public void setPer(int index, Perceptron perc) {
         this.perList.set(index, perc);
     }
-
     /**
      * Adds a perceptron to the layer
      *
@@ -122,7 +108,6 @@ public class Layer implements java.io.Serializable {
     public void addPer(Perceptron perc) {
         this.perList.add(perc);
     }
-
     /**
      * Returns the neural net to which this layer belongs
      *
@@ -132,7 +117,6 @@ public class Layer implements java.io.Serializable {
     public NeuralNet getNeuralNet() {
         return this.neuralnet;
     }
-
     /**
      * This calculates the net value of that perceptron's weight (currently each
      * perceptron has one weight)
@@ -142,16 +126,13 @@ public class Layer implements java.io.Serializable {
     public float net() {
         // Calculate net function for the layer
         float net = (float) 0.0;
-
         for (Perceptron p : this.perList) {
             for (float weight : p.getWeightArr()) {
                 net += p.getValue() * weight;
             }
         }
-
         return net;
     }
-
     /**
      * Updates all of the neurons in this layer with new values in the form of
      * an ArrayList of floats.
@@ -164,14 +145,11 @@ public class Layer implements java.io.Serializable {
             Perceptron p = this.perList.get(i);
             p.setValue(newValues.get(i));
         }
-
     }
-
     @Override
     public String toString() {
         return "Layer{ " + " perList = " + perList + '}';
     }
-
     /**
      * Returns the index of the current layer
      *
@@ -181,5 +159,4 @@ public class Layer implements java.io.Serializable {
     public int getIndex() {
         return index;
     }
-
 }

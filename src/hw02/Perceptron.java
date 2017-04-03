@@ -14,49 +14,40 @@
 * ****************************************
  */
 package hw02;
-
 import java.util.ArrayList;
 import java.util.Random;
-
 /**
  *
  * @author Michael Matirko and Annan Miao
  */
 public class Perceptron implements java.io.Serializable {
-
     /**
      * This array is an array of all of the weights of the perceptron's weights.
      * It corresponds to the inputs in inputArr.
      *
      */
     private ArrayList<Float> weightArr;
-
     /**
      * This is the value of the neuron.
      */
     private float value;
-
     /**
      * This is the activation constant (currently unused)
      */
     private float ACTIVATION_CONST;
-
     /**
      * This is the layer that the Perceptron resides in
      */
     private Layer layer;
-
     /**
      * Has the neuron been initialized or not? I.e, have we done any back
      * propagation yet?
      */
     private boolean status;
-
     /**
      * What is the error currently associated with this perceptron?
      */
     private float error;
-
     /**
      * The constructor for the perceptron initializes each perceptron with the
      * value passed to it, and random weights to populate the weight list
@@ -67,7 +58,6 @@ public class Perceptron implements java.io.Serializable {
      */
     public Perceptron(Layer layer) {
         Random randnumObj = new Random();
-
         int numweights;
         if (layer.getIndex() != 0) {
             numweights = layer.getPrevLayer().getPerList().size();
@@ -75,18 +65,14 @@ public class Perceptron implements java.io.Serializable {
         else {
             numweights = 0;
         }
-
         this.layer = layer;
         this.weightArr = new ArrayList<>();
-
         for (int i = 0; i < numweights; i++) {
             // Set the weight to a random float between -2.4/m and 2.4/m
             weightArr.add(
                     (float) (-2.4f * randnumObj.nextDouble() / (float) this.layer.getNeuralNet().getNumInputs()));
         }
-
     }
-
     /**
      * Gets the weight array from the perceptron
      *
@@ -96,7 +82,6 @@ public class Perceptron implements java.io.Serializable {
     public ArrayList<Float> getWeightArr() {
         return weightArr;
     }
-
     /**
      * Sets the weight for the perceptron with the specified position in the
      * weight ArrayList
@@ -108,7 +93,6 @@ public class Perceptron implements java.io.Serializable {
     public void setWeight(int position, float weight) {
         this.weightArr.set(position, weight);
     }
-
     /**
      * Gets the value of this perceptron
      *
@@ -126,7 +110,6 @@ public class Perceptron implements java.io.Serializable {
             return this.value = activation(net());
         }
     }
-
     /**
      * This calculates the net function for the perceptron. It does it based on
      * the previous perceptrons in the previous layers that lead to it.
@@ -136,21 +119,16 @@ public class Perceptron implements java.io.Serializable {
      */
     public float net() {
         ArrayList<Perceptron> prevList = new ArrayList<>();
-
         if (this.layer.getIndex() != 0) {
             prevList = this.layer.getPrevLayer().getPerList();
         }
-
         float net = 0.0f;
-
         for (int i = 0; i < prevList.size(); i++) {
             Perceptron p = prevList.get(i);
             net += p.getValue() * this.weightArr.get(i);
         }
-
         return net;
     }
-
     /**
      * Sets the value of the perceptron
      *
@@ -161,7 +139,6 @@ public class Perceptron implements java.io.Serializable {
     public void setValue(float value) {
         this.value = value;
     }
-
     /**
      * Tells whether this perceptron is "activated" or not
      *
@@ -173,7 +150,6 @@ public class Perceptron implements java.io.Serializable {
      */
     public float activation(float net) {
         float fnet = 1 / (1 + (float) Math.pow(Math.E, -1 * net));
-
         /*
     *    if (net - this.ACTIVATION_CONST > 0) {
     *        return 1.0f;
@@ -183,9 +159,7 @@ public class Perceptron implements java.io.Serializable {
     *    }
          */
         return fnet;
-
     }
-
     /**
      * Wipes the value of the neuron (sets the value back to false)
      *
@@ -195,7 +169,6 @@ public class Perceptron implements java.io.Serializable {
         this.status = false;
         this.value = 0.0f;
     }
-
     /**
      * Returns a visual representation of a Perceptron object (primarily for
      * debugging purposes, but also cool to look at)
@@ -207,7 +180,6 @@ public class Perceptron implements java.io.Serializable {
     public String toString() {
         return "Perceptron{" + "weightArr = " + weightArr + ", value=" + value + " status =" + this.status + '}';
     }
-
     /**
      * Gets the layer that the perceptron is in
      *
@@ -217,7 +189,6 @@ public class Perceptron implements java.io.Serializable {
     public Layer getLayer() {
         return layer;
     }
-
     /**
      * Get the error associated with this perceptron
      *
@@ -227,7 +198,6 @@ public class Perceptron implements java.io.Serializable {
     public float getError() {
         return error;
     }
-
     /**
      * Set the error associated with this perceptron
      *
@@ -237,5 +207,4 @@ public class Perceptron implements java.io.Serializable {
     public void setError(float error) {
         this.error = error;
     }
-
 }

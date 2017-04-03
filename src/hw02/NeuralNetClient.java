@@ -15,7 +15,6 @@
 * ****************************************
  */
 package hw02;
-
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -27,17 +26,13 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Scanner;
-
 /**
  *
  * @author Annan Miao and Michael Matirko
  */
 public class NeuralNetClient {
-
     static NeuralNet net;
-
     static int numInputs;
-
     /**
      * This method is the main method for the Neural Net Client. It calls all of
      * the required methods in order to allow the user to use the ANN in the
@@ -58,10 +53,8 @@ public class NeuralNetClient {
         System.out.println(" 1) Create a new ANN                             ");
         System.out.println(" 2) Read from an existing ANN config             ");
         System.out.print("\n Selection: ");
-
         // Get a selection from the user
         int selection = getUserSelection();
-
         // Call the correct method depending on the user's choice
         if (selection == 1) {
             createNewANN();
@@ -69,9 +62,7 @@ public class NeuralNetClient {
         else if (selection == 2) {
             loadConfiguration();
         }
-
     }
-
     /**
      * This method is called when the user selects the option matching "create a
      * new ANN." It creates a new Neural Net that can be fed input by the user.
@@ -85,48 +76,37 @@ public class NeuralNetClient {
         Scanner in = new Scanner(System.in);
         clear();
         System.out.println("********************Create ANN********************");
-
         System.out.print("How many inputs should we have? ");
         NeuralNetClient.numInputs = in.nextInt();
-
         System.out.print("\nHow many hidden layers should we have? ");
         int numHidden = in.nextInt();
-
         System.out.print(
                 "\nHow many perceptrons should we have per hidden layer? ");
         int numHiddenPer = in.nextInt();
-
         System.out.print("\nHow many outputs should we have? ");
         int numOutputs = in.nextInt();
-
         net = new NeuralNet(numInputs, numHidden, numHiddenPer, numOutputs);
         clear();
         System.out.println("***************Neural Net Created*****************");
         System.out.println("     Select one of the following options:   \n   ");
         System.out.println(" 1) Training Mode for ANN \n                     ");
         System.out.println(" 2) Classification Mode for ANN \n               ");
-
         // Get a selection from the user
         int selection = getUserSelection();
-
         // Call the correct method depending on the user's choice
         if (selection == 1) {
             trainingMode();
-
         }
         else if (selection == 2) {
             classificationMode();
         }
-
     }
-
     private static void trainingMode() throws IOException {
         clear();
         System.out.println("************Train Neural Net From File************");
         Scanner in = new Scanner(System.in);
         System.out.print("Enter a CSV file with training data: ");
         String filename = in.next();
-
         net.update(filename);
         clear();
         System.out.println("**************Neural Net Trained****************");
@@ -134,14 +114,11 @@ public class NeuralNetClient {
         System.out.println(" 1) Training Mode for ANN \n                     ");
         System.out.println(" 2) Classification Mode for ANN \n               ");
         System.out.println(" 3) Save Configuration for ANN \n                ");
-
         // Get a selection from the user
         int selection = getUserSelection();
-
         // Call the correct method depending on the user's choice
         if (selection == 1) {
             trainingMode();
-
         }
         else if (selection == 2) {
             classificationMode();
@@ -149,20 +126,15 @@ public class NeuralNetClient {
         else if (selection == 3) {
             saveConfiguration();
         }
-
     }
-
     private static void classificationMode() throws FileNotFoundException, IOException {
         System.out.println(net);
         ArrayList<Integer> targetOutput = new ArrayList<>();
-
         BufferedReader br = null;
         File file = new File("data.csv");
         br = new BufferedReader(new FileReader(file));
-
         String line = br.readLine();
         ArrayList<ArrayList<Integer>> inputpairlist = new ArrayList<>();
-
         while (line != null) {
             ArrayList<Integer> inputs = new ArrayList<>();
             String[] numbers = line.split(",");
@@ -173,17 +145,13 @@ public class NeuralNetClient {
             line = br.readLine();
             inputpairlist.add(inputs);
         }
-
         System.out.println(inputpairlist);
         for (int i = 0; i < inputpairlist.size(); i++) {
             System.out.println(
                     "Trying input pair " + inputpairlist.get(i) + " output is " + net.classify(
                     inputpairlist.get(i)));
-
         }
-
     }
-
     /**
      * Saves the configuration of the neural net to a file using serialization.
      *
@@ -203,16 +171,13 @@ public class NeuralNetClient {
         Scanner in = new Scanner(System.in);
         System.out.print("\nEnter a name for the configuration file to save: ");
         String fname = in.next();
-
         FileOutputStream fos = new FileOutputStream(fname);
-
         ObjectOutputStream out = new ObjectOutputStream(fos);
         out.writeObject(net);
         out.close();
         fos.close();
         System.out.println(" Configuration for the net saved in " + fname + " !");
     }
-
     /**
      * Loads the configuration of the neural net from a file using
      * (de)serialization.
@@ -235,9 +200,7 @@ public class NeuralNetClient {
             System.out.print(
                     "\nEnter a name for the configuration file to load: ");
             String fname = in.next();
-
             FileInputStream fis = new FileInputStream(fname);
-
             ObjectInputStream objstream = new ObjectInputStream(fis);
             net = (NeuralNet) objstream.readObject();
             objstream.close();
@@ -249,7 +212,6 @@ public class NeuralNetClient {
                     "Generated a ClassNotFound Exception. Maybe not a config file?");
         }
     }
-
     /**
      * We use the scanner for int inputs quite a bit, so here is a method that
      * creates a scanner and takes in an int (and returns that int.)
@@ -261,10 +223,8 @@ public class NeuralNetClient {
         // Get a selection from the user
         Scanner inputsc = new Scanner(System.in);
         int selection = inputsc.nextInt();
-
         return selection;
     }
-
     /**
      * Clears the screen
      *
@@ -274,5 +234,4 @@ public class NeuralNetClient {
         System.out.println("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n");
         System.out.println("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n");
     }
-
 }
